@@ -1,2 +1,2 @@
 # sequencerA
-Develop, play and manage sound sequences. Pure javascript.
+Develop, play and manage sound sequences
