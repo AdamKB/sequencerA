@@ -14,12 +14,14 @@
 
     "use strict";
     
-    indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-    IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;  
-    
-    if (!indexedDB) {
-      sweetAlert("Your browser doesn't support a stable version of IndexedDB.")
+    window.onload = function() {
+      window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+      window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+      Iwindow.DBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;  
+
+      if (!window.indexedDB) {
+        sweetAlert("Your browser doesn't support a stable version of IndexedDB.")
+      }
     }
       
     // create an instance of a db object for us to store the IDB data in
@@ -60,7 +62,7 @@
 
 <body>
   
-  <p>Files in sounds.zip. 2.</p>
+  <p>Files in sounds.zip. 3.</p>
   
   
 </body>
