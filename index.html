@@ -10,17 +10,18 @@
     $.getScript("https://cdn.rawgit.com/xsf3190/sequencerA/master/jszip.min.js");
   </script>
   
-  <script>
-    $.getScript("https://cdn.rawgit.com/AdamKB/Sequencer-A/master/test.js");
-  </script>
-  
-  
   <script type="text/javascript">
+
+    "use strict";
+      
+    // create an instance of a db object for us to store the IDB data in
+    var db;
     
     $(function() {
+      window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+      window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+      window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;
     
-      "use strict";
-
       var xhr = new XMLHttpRequest();
       xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
       xhr.responseType = 'arraybuffer';
