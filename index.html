@@ -28,58 +28,40 @@
     
     $(function() {
       
-      var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-      if (!indexedDB) {
-        sweetAlert("Your browser doesn't support a stable version of IndexedDB.");
-        return;
-      }
-      var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction,
-          DBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange,
-          db;
-      
-      var DBOpenRequest = indexedDB.open("sounds", 1);
-
-      DBOpenRequest.onerror = function(event) {
-        sweetAlert("FAILED - opening IndexedDB.");
+      var request = window.indexedDB.open("sequencerA", 1);
+      request.onerror = function(event) {
+        sweetAlert("Why didn't you allow my web app to use IndexedDB?");
         return;
       };
+      
+      var db;
 
-      DBOpenRequest.onsuccess = function(event) {
+      request.onsuccess = function(event) {
         sweetAlert("SUCCESS - opening IndexedDB.");
 
         // store the result of opening the database in the db variable. This is used a lot below
-        db = DBOpenRequest.result;
-
-        // Run the displayData() function to populate the task list with all the to-do list data already in the IDB
+        db = event.target.result;
         //displayData();
       };
+      
+      // Generic error handler for all errors targeted at this database's requests!
+      db.onerror = function(event) {
+        sweetAlert("Database error: " + event.target.errorCode);
+      };
 
-  // This event handles the event whereby a new version of the database needs to be created
-  // Either one has not been created before, or a new version number has been submitted via the
-  // window.indexedDB.open line above
-  DBOpenRequest.onupgradeneeded = function(event) {
-    var db = event.target.result;
+      // This event handles the event whereby a new version of the database needs to be created
+      // Either one has not been created before, or a new version number has been submitted via the
+      // window.indexedDB.open line above
+      request.onupgradeneeded = function(event) {
+        var db = event.target.result;
 
-    db.onerror = function(event) {
-      note.innerHTML += '<li>Error loading database.</li>';
-    };
+        db.onerror = function(event) {
+          sweetAlert("Error loading database: " + event.target.errorCode);
+        };
 
-    // Create an objectStore for this database
-
-    var objectStore = db.createObjectStore("toDoList", { keyPath: "taskTitle" });
-
-    // define what data items the objectStore will contain
-
-    objectStore.createIndex("hours", "hours", { unique: false });
-    objectStore.createIndex("minutes", "minutes", { unique: false });
-    objectStore.createIndex("day", "day", { unique: false });
-    objectStore.createIndex("month", "month", { unique: false });
-    objectStore.createIndex("year", "year", { unique: false });
-
-    objectStore.createIndex("notified", "notified", { unique: false });
-
-    note.innerHTML += '<li>Object store created.</li>';
-  };
+        // Create "sounds" objectStore 
+        var objectStore = db.createObjectStore("sounds", { autoincrement: true });
+      };
       
       
       var xhr = new XMLHttpRequest();
@@ -115,7 +97,7 @@
 
 <body>
   
-  <p>Files in sounds.zip. 3.</p>
+  <p>Files in sounds.zip. 4.</p>
   
   
 </body>
