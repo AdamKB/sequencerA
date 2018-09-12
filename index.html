@@ -13,18 +13,6 @@
   <script type="text/javascript">
 
     "use strict";
-    /*
-    window.onload = function() {
-      window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-      window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-      window.DBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;  
-
-      if (!window.indexedDB) {
-        sweetAlert("Your browser doesn't support a stable version of IndexedDB.")
-      }
-    }
-    */
-      
     
     $(function() {
       
@@ -65,27 +53,28 @@
         sounds = db.createObjectStore("sounds", { autoincrement: true });
         
         console.log("Creating objectStore - sequences");
-        sounds = db.createObjectStore("sequences", { autoincrement: true });
+        sequences = db.createObjectStore("sequences", { autoincrement: true });
         
         console.log("Creating objectStore - chains");
-        sounds = db.createObjectStore("chains", { autoincrement: true });
+        chains = db.createObjectStore("chains", { autoincrement: true });
         
       };
       
       
       var xhr = new XMLHttpRequest();
       xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
-      xhr.responseType = 'arraybuffer';
+      xhr.responseType = 'blob';
 
       xhr.onload = function(e) {
         if (this.status == 200) {
-          // get binary data as a response
-          alert("got zip file as arraybuffer");
-          JSZip.loadAsync(this.response)                                   // 1) read the zip file
+          JSZip.loadAsync(this.response)                         // 1) read the zip file
             .then(function(zip) {
                 zip.forEach(function (relativePath, zipEntry) {  // 2) process each entry
                     zip.files[relativePath].async('text')
                     .then(function(data) {
+                       var obj={name: zipEntry.name, data: data};
+                       var request;
+                       request=sounds.add(obj);
                        //console.log(zipEntry.name);
                        $("body").append("<p>"+zipEntry.name+"</p>");
                     }); 
