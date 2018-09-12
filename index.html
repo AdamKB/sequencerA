@@ -13,26 +13,74 @@
   <script type="text/javascript">
 
     "use strict";
-    
+    /*
     window.onload = function() {
       window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
       window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
-      Iwindow.DBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;  
+      window.DBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange;  
 
       if (!window.indexedDB) {
         sweetAlert("Your browser doesn't support a stable version of IndexedDB.")
       }
     }
+    */
       
-    // create an instance of a db object for us to store the IDB data in
-    var db;
     
     $(function() {
       
       var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-      if (!window.indexedDB) {
-        sweetAlert("Your browser doesn't support a stable version of IndexedDB.")
+      if (!indexedDB) {
+        sweetAlert("Your browser doesn't support a stable version of IndexedDB.");
+        return;
       }
+      var IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction,
+          DBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange,
+          db;
+      
+      var DBOpenRequest = indexedDB.open("sounds", 1);
+
+      DBOpenRequest.onerror = function(event) {
+        sweetAlert("FAILED - opening IndexedDB.");
+        return;
+      };
+
+      DBOpenRequest.onsuccess = function(event) {
+        sweetAlert("SUCCESS - opening IndexedDB.");
+
+        // store the result of opening the database in the db variable. This is used a lot below
+        db = DBOpenRequest.result;
+
+        // Run the displayData() function to populate the task list with all the to-do list data already in the IDB
+        //displayData();
+      };
+
+  // This event handles the event whereby a new version of the database needs to be created
+  // Either one has not been created before, or a new version number has been submitted via the
+  // window.indexedDB.open line above
+  DBOpenRequest.onupgradeneeded = function(event) {
+    var db = event.target.result;
+
+    db.onerror = function(event) {
+      note.innerHTML += '<li>Error loading database.</li>';
+    };
+
+    // Create an objectStore for this database
+
+    var objectStore = db.createObjectStore("toDoList", { keyPath: "taskTitle" });
+
+    // define what data items the objectStore will contain
+
+    objectStore.createIndex("hours", "hours", { unique: false });
+    objectStore.createIndex("minutes", "minutes", { unique: false });
+    objectStore.createIndex("day", "day", { unique: false });
+    objectStore.createIndex("month", "month", { unique: false });
+    objectStore.createIndex("year", "year", { unique: false });
+
+    objectStore.createIndex("notified", "notified", { unique: false });
+
+    note.innerHTML += '<li>Object store created.</li>';
+  };
+      
       
       var xhr = new XMLHttpRequest();
       xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
