@@ -34,7 +34,8 @@
                 zip.forEach(function (relativePath, zipEntry) {  // 2) process each entry
                     zip.files[relativePath].async('text')
                     .then(function(data) {
-                        console.log(zipEntry.name);
+                       console.log(zipEntry.name);
+                       $("body").append("<p>"+zipEntry.name+"</p>";
                     }); 
                 });
             }, function (e) {
@@ -53,7 +54,8 @@
 
 <body>
   
-  <p>First attempt</p>
+  <p>Files in sounds.zip</p>
+  
   
 </body>
 
