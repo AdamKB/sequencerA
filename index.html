@@ -34,7 +34,7 @@
         return;
       };
       
-      var db;
+      var db, sounds, sequences, chains;
 
       request.onsuccess = function(event) {
         sweetAlert("SUCCESS - opening IndexedDB.");
@@ -60,9 +60,16 @@
         db.onerror = function(event) {
           sweetAlert("Error loading database: " + event.target.errorCode);
         };
-
-        // Create "sounds" objectStore 
-        var objectStore = db.createObjectStore("sounds", { autoincrement: true });
+        
+        console.log("Creating objectStore - sounds");
+        sounds = db.createObjectStore("sounds", { autoincrement: true });
+        
+        console.log("Creating objectStore - sequences");
+        sounds = db.createObjectStore("sequences", { autoincrement: true });
+        
+        console.log("Creating objectStore - chains");
+        sounds = db.createObjectStore("chains", { autoincrement: true });
+        
       };
       
       
