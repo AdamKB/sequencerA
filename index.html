@@ -45,8 +45,10 @@
       };
       
       // Generic error handler for all errors targeted at this database's requests!
-      db.onerror = function(event) {
-        sweetAlert("Database error: " + event.target.errorCode);
+      if (db) {
+        db.onerror = function(event) {
+          sweetAlert("Database error: " + event.target.errorCode);
+        };
       };
 
       // This event handles the event whereby a new version of the database needs to be created
