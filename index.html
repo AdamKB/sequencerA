@@ -17,9 +17,19 @@
   
   <script type="text/javascript">
     
-    $(function() { 
-      swal("DOMready");  
-    });
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
+    xhr.responseType = 'blob';
+
+    xhr.onload = function(e) {
+      if (this.status == 200) {
+        // get binary data as a response
+        alert("got binary data");
+        var blob = this.response;
+      }
+    };
+
+    xhr.send();
     
   </script>
   
