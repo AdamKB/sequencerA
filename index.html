@@ -28,7 +28,12 @@
     var db;
     
     $(function() {
-    
+      
+      var indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+      if (!window.indexedDB) {
+        sweetAlert("Your browser doesn't support a stable version of IndexedDB.")
+      }
+      
       var xhr = new XMLHttpRequest();
       xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
       xhr.responseType = 'arraybuffer';
