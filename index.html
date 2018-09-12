@@ -17,19 +17,25 @@
   
   <script type="text/javascript">
     
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
-    xhr.responseType = 'blob';
+    $(function() {
+    
+      "use strict";
 
-    xhr.onload = function(e) {
-      if (this.status == 200) {
-        // get binary data as a response
-        alert("got binary data");
-        var blob = this.response;
-      }
-    };
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
+      xhr.responseType = 'blob';
 
-    xhr.send();
+      xhr.onload = function(e) {
+        if (this.status == 200) {
+          // get binary data as a response
+          alert("got binary data");
+          var blob = this.response;
+        }
+      };
+
+      xhr.send();
+      
+    })
     
   </script>
   
