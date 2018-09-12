@@ -46,13 +46,8 @@
           sweetAlert("Error loading database: " + event.target.errorCode);
         };
         
-        console.log("Creating objectStore - sounds");
         sounds = db.createObjectStore("sounds", { autoincrement: true });
-        
-        console.log("Creating objectStore - sequences");
         sequences = db.createObjectStore("sequences", { autoincrement: true });
-        
-        console.log("Creating objectStore - chains");
         chains = db.createObjectStore("chains", { autoincrement: true });
         
         var xhr = new XMLHttpRequest();
@@ -61,9 +56,9 @@
 
         xhr.onload = function(e) {
           if (this.status == 200) {
-            JSZip.loadAsync(this.response)                         // 1) read the zip file
+            JSZip.loadAsync(this.response)                         
               .then(function(zip) {
-                  zip.forEach(function (relativePath, zipEntry) {  // 2) process each entry
+                  zip.forEach(function (relativePath, zipEntry) {
                       zip.files[relativePath].async('text')
                       .then(function(data) {
                          var obj={name: zipEntry.name, data: data};
