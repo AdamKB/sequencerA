@@ -35,6 +35,11 @@
           sweetAlert("Database error: " + event.target.errorCode);
         };
       };
+      
+      function getObjectStore(store_name, mode) {
+        var tx = db.transaction(store_name, mode);
+        return tx.objectStore(store_name);
+      }
 
       // This event handles the event whereby a new version of the database needs to be created
       // Either one has not been created before, or a new version number has been submitted via the
@@ -46,7 +51,7 @@
           sweetAlert("Error loading database: " + event.target.errorCode);
         };
         
-        sounds = db.createObjectStore("sounds", { autoincrement: true });
+        sounds = db.createObjectStore("sounds", { keyPath: 'id', autoincrement: true });
         sequences = db.createObjectStore("sequences", { autoincrement: true });
         chains = db.createObjectStore("chains", { autoincrement: true });
         
@@ -56,6 +61,7 @@
 
         xhr.onload = function(e) {
           if (this.status == 200) {
+            var store = getObjectStore('sounds', 'read');
             JSZip.loadAsync(this.response)                         
               .then(function(zip) {
                   zip.forEach(function (relativePath, zipEntry) {
@@ -63,7 +69,7 @@
                       .then(function(data) {
                          var obj={name: zipEntry.name, data: data};
                          var request;
-                         request=sounds.add(obj);
+                         request=store.add(obj);
                          //console.log(zipEntry.name);
                          $("body").append("<p>"+zipEntry.name+"</p>");
                       }); 
