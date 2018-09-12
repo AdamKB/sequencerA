@@ -25,9 +25,6 @@
       var db, sounds, sequences, chains;
 
       request.onsuccess = function(event) {
-        sweetAlert("SUCCESS - opening IndexedDB.");
-
-        // store the result of opening the database in the db variable. This is used a lot below
         db = event.target.result;
         //displayData();
       };
