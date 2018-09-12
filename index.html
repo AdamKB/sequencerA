@@ -34,11 +34,11 @@
                 zip.forEach(function (relativePath, zipEntry) {  // 2) process each entry
                     zip.files[relativePath].async('text')
                     .then(function(data) {
-                        console.log(zipEntry);
+                        console.log(zipEntry.name);
                     }); 
                 });
             }, function (e) {
-                sweetAlert("Error reading " + f.name + ": " + e.message);
+                sweetAlert("Error reading sounds.zip - " + e.message);
             });
         }
       };
