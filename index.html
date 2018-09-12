@@ -58,34 +58,31 @@
         console.log("Creating objectStore - chains");
         chains = db.createObjectStore("chains", { autoincrement: true });
         
-      };
-      
-      
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
-      xhr.responseType = 'blob';
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
+        xhr.responseType = 'blob';
 
-      xhr.onload = function(e) {
-        if (this.status == 200) {
-          JSZip.loadAsync(this.response)                         // 1) read the zip file
-            .then(function(zip) {
-                zip.forEach(function (relativePath, zipEntry) {  // 2) process each entry
-                    zip.files[relativePath].async('text')
-                    .then(function(data) {
-                       var obj={name: zipEntry.name, data: data};
-                       var request;
-                       request=sounds.add(obj);
-                       //console.log(zipEntry.name);
-                       $("body").append("<p>"+zipEntry.name+"</p>");
-                    }); 
-                });
-            }, function (e) {
-                sweetAlert("Error reading sounds.zip - " + e.message);
-            });
-        }
-      };
+        xhr.onload = function(e) {
+          if (this.status == 200) {
+            JSZip.loadAsync(this.response)                         // 1) read the zip file
+              .then(function(zip) {
+                  zip.forEach(function (relativePath, zipEntry) {  // 2) process each entry
+                      zip.files[relativePath].async('text')
+                      .then(function(data) {
+                         var obj={name: zipEntry.name, data: data};
+                         var request;
+                         request=sounds.add(obj);
+                         //console.log(zipEntry.name);
+                         $("body").append("<p>"+zipEntry.name+"</p>");
+                      }); 
+                  });
+              }, function (e) {
+                  sweetAlert("Error reading sounds.zip - " + e.message);
+              });
+          }
+        };
 
-      xhr.send();
+        xhr.send();
       
     })
     
