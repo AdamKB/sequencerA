@@ -23,12 +23,12 @@
 
       var xhr = new XMLHttpRequest();
       xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds.zip', true);
-      xhr.responseType = 'blob';
+      xhr.responseType = 'arraybuffer';
 
       xhr.onload = function(e) {
         if (this.status == 200) {
           // get binary data as a response
-          alert("got binary data");
+          alert("got zip file as arraybuffer");
           var blob = this.response;
         }
       };
