@@ -19,11 +19,13 @@
       const DB_NAME="sequencerA";
       const DB_VERSION=1;
       
-      var request = window.indexedDB.open("sequencerA", 1);
+      var request = window.indexedDB.open(DB_NAME, DB_VERSION);
       request.onerror = function(event) {
         sweetAlert("Why didn't you allow my web app to use IndexedDB?");
         return;
       };
+      
+      $("#version").text(DB_VERSION);
       
       var db;
 
@@ -100,6 +102,11 @@
   
   <table id="main">
   </table>
+  
+  <footer>
+    <p>Created by Adam K. Brown, 2018</p>
+    <p id="version"></p> 
+  </footer>
   
   
 </body>
