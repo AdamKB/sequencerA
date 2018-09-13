@@ -60,6 +60,7 @@
         db.createObjectStore("sequences", { autoincrement: true });
         db.createObjectStore("chains", { autoincrement: true });
         loadZip2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip', 'sounds');
+        loadFile2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sequencerA.jpg', 'images');
       }
 
       function loadZip2DB(zipfile, storename) {
@@ -85,6 +86,21 @@
         };
         xhr.send();
       };
+      
+      function loadFile2DB(file, storename) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', file, true);
+        xhr.responseType = 'blob';
+        xhr.onload = function(e) {
+          if (this.status == 200) {
+            let blob=this.response,
+                obj={name: file, data: blob},
+                store = getObjectStore(storename, 'readwrite'),
+                request=store.put(obj);
+          }
+        };
+        xhr.send();
+      };      
       
     });
     
