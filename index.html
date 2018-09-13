@@ -25,12 +25,11 @@
         return;
       };
       
-      $("#version").text(DB_VERSION);
-      
       var db;
 
       request.onsuccess = function(event) {
         db = event.target.result;
+        $("#version").text(DB_VERSION);
         //displayData();
       };
       
