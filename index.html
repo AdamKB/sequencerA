@@ -51,7 +51,7 @@
           sweetAlert("Error loading database: " + event.target.errorCode);
         };
         
-        db.createObjectStore("sounds", { autoincrement: true });
+        db.createObjectStore("sounds", { keyPath: "id", autoincrement: true });
         db.createObjectStore("sequences", { autoincrement: true });
         db.createObjectStore("chains", { autoincrement: true });
         
