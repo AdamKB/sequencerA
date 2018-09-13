@@ -16,6 +16,9 @@
     
     $(function() {
       
+      const DB_NAME="sequencerA";
+      const DB_VERSION=1;
+      
       var request = window.indexedDB.open("sequencerA", 1);
       request.onerror = function(event) {
         sweetAlert("Why didn't you allow my web app to use IndexedDB?");
