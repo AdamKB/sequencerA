@@ -66,15 +66,14 @@
 
         xhr.onload = function(e) {
           if (this.status == 200) {
-            var request;
-            var sounds = getObjectStore('sounds', 'readwrite');
             JSZip.loadAsync(this.response)                         
               .then(function(zip) {
                   zip.forEach(function (relativePath, zipEntry) {
                       zip.files[relativePath].async('text')
                       .then(function(data) {
                          var obj={name: zipEntry.name, data: data};
-
+                        var request;
+                        var sounds = getObjectStore('sounds', 'readwrite');
                          request=sounds.add(obj);
                          //console.log(zipEntry.name);
                          $("#main").append("<tr><td>"+zipEntry.name+"</td></tr>");
