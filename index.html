@@ -30,7 +30,6 @@
       request.onsuccess = function(event) {
         db = event.target.result;
         $("#version").text(DB_VERSION);
-        console.log("End of indexDB.open onsuccess");
       };
       
       // Generic error handler for all errors targeted at this database's requests!
