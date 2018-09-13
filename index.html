@@ -30,7 +30,7 @@
       request.onsuccess = function(event) {
         db = event.target.result;
         $("#version").text(DB_VERSION);
-        //displayData();
+        console.log("End of indexDB.open onsuccess");
       };
       
       // Generic error handler for all errors targeted at this database's requests!
@@ -56,13 +56,16 @@
         };
         
         db.createObjectStore("sounds", { keyPath: "name" });
+        db.createObjectStore("images", { keyPath: "name" });
         db.createObjectStore("sequences", { autoincrement: true });
         db.createObjectStore("chains", { autoincrement: true });
-        
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip', true);
-        xhr.responseType = 'blob';
+        loadZip2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip');
+      }
 
+      function loadZip2DB(zipfile) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', zipfile, true);
+        xhr.responseType = 'blob';
         xhr.onload = function(e) {
           if (this.status == 200) {
             JSZip.loadAsync(this.response)                         
@@ -83,7 +86,6 @@
               });
           }
         };
-
         xhr.send();
       };
       
