@@ -59,10 +59,10 @@
         db.createObjectStore("images", { keyPath: "name" });
         db.createObjectStore("sequences", { autoincrement: true });
         db.createObjectStore("chains", { autoincrement: true });
-        loadZip2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip');
+        loadZip2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip', 'sounds');
       }
 
-      function loadZip2DB(zipfile) {
+      function loadZip2DB(zipfile, storename) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', zipfile, true);
         xhr.responseType = 'blob';
@@ -74,11 +74,8 @@
                       zip.files[relativePath].async('text')
                       .then(function(data) {
                          var obj={name: zipEntry.name, data: data};
-                        var request;
-                        var sounds = getObjectStore('sounds', 'readwrite');
-                         request=sounds.add(obj);
-                         //console.log(zipEntry.name);
-                         $("#main").append("<tr><td>"+zipEntry.name+"</td></tr>");
+                         var store = getObjectStore(storename, 'readwrite');
+                         var request=store.put(obj);
                       }); 
                   });
               }, function (e) {
