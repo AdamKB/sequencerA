@@ -28,8 +28,16 @@
       var db;
 
       request.onsuccess = function(event) {
+        console.log("DB Open - success");
         db = event.target.result;
         $("#version").text(DB_VERSION);
+        db.transaction("sounds","readonly").objectStore("sounds").count().onsuccess = function(event) {
+          let count=event.target.result;
+          if (count=0) {
+            loadZip2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip', 'sounds');
+            loadFile2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sequencerA.jpg', 'images');
+          }
+        }
       };
       
       // Generic error handler for all errors targeted at this database's requests!
@@ -48,6 +56,7 @@
       // Either one has not been created before, or a new version number has been submitted via the
       // window.indexedDB.open line above
       request.onupgradeneeded = function(event) {
+        console.log("Starting onupgradeneeded");
         var db = event.target.result;
 
         db.onerror = function(event) {
@@ -58,8 +67,6 @@
         db.createObjectStore("images", { keyPath: "name" });
         db.createObjectStore("sequences", { autoincrement: true });
         db.createObjectStore("chains", { autoincrement: true });
-        loadZip2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip', 'sounds');
-        loadFile2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sequencerA.jpg', 'images');
       }
 
       function loadZip2DB(zipfile, storename) {
