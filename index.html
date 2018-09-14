@@ -28,11 +28,12 @@
       var db;
 
       request.onsuccess = function(event) {
-        console.log("DB Open - success");
+        console.log("indexedDB.open - success");
         db = event.target.result;
         $("#version").text(DB_VERSION);
         db.transaction("sounds","readonly").objectStore("sounds").count().onsuccess = function(event) {
           let count=event.target.result;
+          console.log("Count of sounds in store : "+count);
           if (count=0) {
             loadZip2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip', 'sounds');
             loadFile2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sequencerA.jpg', 'images');
@@ -70,6 +71,7 @@
       }
 
       function loadZip2DB(zipfile, storename) {
+        console.log("Starting loadZip2DB");
         var xhr = new XMLHttpRequest();
         xhr.open('GET', zipfile, true);
         xhr.responseType = 'blob';
@@ -94,6 +96,7 @@
       };
       
       function loadFile2DB(file, storename) {
+        console.log("Starting loadFile2DB");
         var xhr = new XMLHttpRequest();
         xhr.open('GET', file, true);
         xhr.responseType = 'blob';
