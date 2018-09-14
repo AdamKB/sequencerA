@@ -32,9 +32,9 @@
         db = event.target.result;
         $("#version").text(DB_VERSION);
         db.transaction("sounds","readonly").objectStore("sounds").count().onsuccess = function(event) {
-          let count=event.target.result;
+          let count=parseInt(event.target.result);
           console.log("Count of sounds in store : "+count);
-          if (count=0) {
+          if (count==0) {
             loadZip2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip', 'sounds');
             loadFile2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sequencerA.jpg', 'images');
           }
