@@ -19,6 +19,17 @@
       const DB_NAME="sequencerA";
       const DB_VERSION=2;
       
+      var req = indexedDB.deleteDatabase(DB_NAME);
+      req.onsuccess = function () {
+          console.log("Deleted database successfully");
+      };
+      req.onerror = function () {
+          console.log("Couldn't delete database");
+      };
+      req.onblocked = function () {
+          console.log("Couldn't delete database due to the operation being blocked");
+      };
+      
       var request = window.indexedDB.open(DB_NAME, DB_VERSION);
       request.onerror = function(event) {
         sweetAlert("Why didn't you allow my web app to use IndexedDB?");
@@ -65,7 +76,7 @@
         };
         
         //db.createObjectStore("sounds", { keyPath: "name" });
-        db.createObjectStore("sounds", { autoincrement: true });
+        db.createObjectStore("sounds", { autoIncrement: true });
         db.createObjectStore("images", { keyPath: "name" });
         db.createObjectStore("sequences", { autoincrement: true });
         db.createObjectStore("chains", { autoincrement: true });
