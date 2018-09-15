@@ -124,7 +124,7 @@
                       let req=store.add(obj);
                       req.oncomplete = function(event) {
                         // request.result is the allocated primary Key
-                        $("#sounds tr:last").append('<tr data-key="' + request.result + '"><td>' + zipEntry.name + '</td></tr>');
+                        $("#sounds > tbody:last-child").append('<tr data-key="' + request.result + '"><td>' + zipEntry.name + '</td></tr>');
                       }
                    }); 
                  });
@@ -166,6 +166,7 @@
   
   <table id="sounds">
     <thead><tr><th>Sound File</th></tr></thead>
+    <tbody></tbody>
   </table>
   
   <footer>
