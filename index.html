@@ -64,7 +64,8 @@
           sweetAlert("Error loading database: " + event.target.errorCode);
         };
         
-        db.createObjectStore("sounds", { keyPath: "name" });
+        //db.createObjectStore("sounds", { keyPath: "name" });
+        db.createObjectStore("sounds", { autoincrement: true });
         db.createObjectStore("images", { keyPath: "name" });
         db.createObjectStore("sequences", { autoincrement: true });
         db.createObjectStore("chains", { autoincrement: true });
@@ -80,7 +81,7 @@
             JSZip.loadAsync(this.response)                         
               .then(function(zip) {
                   zip.forEach(function (relativePath, zipEntry) {
-                      zip.files[relativePath].async('text')
+                      zip.files[relativePath].async('blob')
                       .then(function(data) {
                          var obj={name: zipEntry.name, data: data};
                          var store = getObjectStore(storename, 'readwrite');
