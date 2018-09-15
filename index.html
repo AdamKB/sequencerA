@@ -120,11 +120,11 @@
                    zip.files[relativePath].async('blob')
                    .then(function(data) {
                       let obj={name: zipEntry.name, data: data};
-                      let store = getObjectStore(storename, 'readwrite');
-                      let req=store.add(obj);
+                      let req = getObjectStore(storename, 'readwrite').add(obj);
                       req.oncomplete = function(event) {
+                        console.log("Starting add to sounds objectStore");
                         // request.result is the allocated primary Key
-                        $("#sounds > tbody:last-child").append('<tr data-key="' + request.result + '"><td>' + zipEntry.name + '</td></tr>');
+                        $("#sounds-tbody").append('<tr data-key="' + request.result + '"><td>' + zipEntry.name + '</td></tr>');
                       }
                    }); 
                  });
@@ -164,9 +164,9 @@
     <img src="https://cdn.rawgit.com/xsf3190/sequencerA/master/sequencerA.jpg" height="30px">
   </p>
   
-  <table id="sounds">
+  <table>
     <thead><tr><th>Sound File</th></tr></thead>
-    <tbody></tbody>
+    <tbody id="sounds-tbody"></tbody>
   </table>
   
   <footer>
