@@ -75,11 +75,10 @@
           sweetAlert("Error loading database: " + event.target.errorCode);
         };
         
-        //db.createObjectStore("sounds", { keyPath: "name" });
         db.createObjectStore("sounds", { autoIncrement: true });
         db.createObjectStore("images", { keyPath: "name" });
-        db.createObjectStore("sequences", { autoincrement: true });
-        db.createObjectStore("chains", { autoincrement: true });
+        db.createObjectStore("sequences", { autoIncrement: true });
+        db.createObjectStore("chains", { autoIncrement: true });
       }
 
       function loadZip2DB(zipfile, storename) {
@@ -100,7 +99,7 @@
                       }); 
                   });
               }, function (e) {
-                  sweetAlert("Error reading sounds.zip - " + e.message);
+                  sweetAlert("Error reading " + zipfile + " : " + e.message);
               });
           }
         };
