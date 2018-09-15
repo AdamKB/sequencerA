@@ -122,7 +122,7 @@
                       let obj={name: zipEntry.name, data: data};
                       let store = getObjectStore(storename, 'readwrite');
                       let req=store.add(obj);
-                      req..oncomplete = function(event) {
+                      req.oncomplete = function(event) {
                         // request.result is the allocated primary Key
                         $("#sounds tr:last").append('<tr data-key="' + request.result + '"><td>' + zipEntry.name + '</td></tr>');
                       }
