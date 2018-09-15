@@ -96,14 +96,11 @@
                    .then(function(data) {
                       let obj={name: zipEntry.name, data: data};
                       let transaction=db.transaction("sounds","readwrite");
+                      console.log("inserting sound");
                       let add = transaction.objectStore("sounds").add(obj);
-                      transaction.objectStore("sounds").get(add.result).onsuccess = function (event) {
-                        console.log("Starting get");
-                        // req.result is the allocated primary Key
-                        //$("#sounds-tbody").append('<tr data-key="' + add.result + '"><td>' + zipEntry.name + '</td></tr>');
-                      }
                    }); 
                  });
+                 console.log("Completed processing zip file");
               }, function (e) {
                   sweetAlert("Error reading " + zipfile + " : " + e.message);
               });
