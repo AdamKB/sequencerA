@@ -121,6 +121,7 @@
                    .then(function(data) {
                       let obj={name: zipEntry.name, data: data};
                       let req = getObjectStore(storename, 'readwrite').add(obj);
+                      console.dir(req);
                       req.oncomplete = function(event) {
                         console.log("Starting add to sounds objectStore");
                         // req.result is the allocated primary Key
