@@ -123,8 +123,8 @@
                       let req = getObjectStore(storename, 'readwrite').add(obj);
                       req.oncomplete = function(event) {
                         console.log("Starting add to sounds objectStore");
-                        // request.result is the allocated primary Key
-                        $("#sounds-tbody").append('<tr data-key="' + request.result + '"><td>' + zipEntry.name + '</td></tr>');
+                        // req.result is the allocated primary Key
+                        $("#sounds-tbody").append('<tr data-key="' + req.result + '"><td>' + zipEntry.name + '</td></tr>');
                       }
                    }); 
                  });
@@ -145,8 +145,10 @@
           if (this.status == 200) {
             let blob=this.response,
                 obj={name: file, data: blob},
-                store = getObjectStore(storename, 'readwrite'),
-                request=store.put(obj);
+                req = getObjectStore(storename, 'readwrite').put(obj);
+            req.oncomplete=function(event) {
+              console.log("Add image successful. req.result="+req.result);
+            }
           }
         };
         xhr.send();
