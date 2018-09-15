@@ -122,7 +122,8 @@
                          var obj={name: zipEntry.name, data: data};
                          var store = getObjectStore(storename, 'readwrite');
                          var request=store.add(obj);
-                         console.log(request);
+                         // request.result is the allocated primary Key
+                         $("#sounds tr:last").append('<tr data-key="' + request.result + '"><td>' + zipEntry.name + '</td></tr>');
                       }); 
                   });
               }, function (e) {
