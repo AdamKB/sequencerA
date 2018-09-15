@@ -42,13 +42,13 @@
         console.log("indexedDB.open - success");
         db = event.target.result;
         $("#version").text(DB_VERSION);
-        db.transaction("sounds","readonly").objectStore("sounds").count().onsuccess = function(event) {
+        let store = getObjectStore("sounds", 'readonly').count().onsuccess = function(event) {
           let count=parseInt(event.target.result);
           console.log("Count of sounds in store : "+count);
           if (count==0) {
             loadZip2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sounds1.zip', 'sounds');
             loadFile2DB('https://cdn.rawgit.com/xsf3190/sequencerA/master/sequencerA.jpg', 'images');
-          }
+          };
         }
       };
       
@@ -80,6 +80,32 @@
         db.createObjectStore("sequences", { autoIncrement: true });
         db.createObjectStore("chains", { autoIncrement: true });
       }
+      
+      // Show all sounds in sounds store
+      function showSounds() {
+        let content="<table><thead><tr><th>Name</th><th>Updated</th></thead><tbody>";
+
+        transaction.oncomplete = function(event) {
+            $("#soundList").html(content);
+        };
+
+        var handleResult = function(event) {  
+          var cursor = event.target.result;  
+          if (cursor) {  
+            content += "<tr data-key=\""+cursor.key+"\"><td class=\"notetitle\">"+cursor.value.title+"</td>";
+            content += "<td>"+dtFormat(cursor.value.updated)+"</td>";
+
+            content += "<td><a class=\"btn btn-primary edit\">Edit</a> <a class=\"btn btn-danger delete\">Delete</a></td>";
+            content +="</tr>";
+            cursor.continue();  
+          }  
+          else {  
+            content += "</tbody></table>";
+          }  
+        };
+        let objectStore = transaction.objectStore("sounds");
+        objectStore.openCursor().onsuccess = handleResult;
+    }
 
       function loadZip2DB(zipfile, storename) {
         console.log("Starting loadZip2DB");
@@ -95,7 +121,8 @@
                       .then(function(data) {
                          var obj={name: zipEntry.name, data: data};
                          var store = getObjectStore(storename, 'readwrite');
-                         var request=store.put(obj);
+                         var request=store.add(obj);
+                         console.log(request);
                       }); 
                   });
               }, function (e) {
@@ -134,7 +161,7 @@
     <img src="https://cdn.rawgit.com/xsf3190/sequencerA/master/sequencerA.jpg" height="30px">
   </p>
   
-  <table id="main">
+  <table id="sounds">
   </table>
   
   <footer>
