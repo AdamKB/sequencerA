@@ -116,16 +116,18 @@
           if (this.status == 200) {
             JSZip.loadAsync(this.response)                         
               .then(function(zip) {
-                  zip.forEach(function (relativePath, zipEntry) {
-                      zip.files[relativePath].async('blob')
-                      .then(function(data) {
-                         var obj={name: zipEntry.name, data: data};
-                         var store = getObjectStore(storename, 'readwrite');
-                         var request=store.add(obj);
-                         // request.result is the allocated primary Key
-                         $("#sounds tr:last").append('<tr data-key="' + request.result + '"><td>' + zipEntry.name + '</td></tr>');
-                      }); 
-                  });
+                 zip.forEach(function (relativePath, zipEntry) {
+                   zip.files[relativePath].async('blob')
+                   .then(function(data) {
+                      let obj={name: zipEntry.name, data: data};
+                      let store = getObjectStore(storename, 'readwrite');
+                      let req=store.add(obj);
+                      req..oncomplete = function(event) {
+                        // request.result is the allocated primary Key
+                        $("#sounds tr:last").append('<tr data-key="' + request.result + '"><td>' + zipEntry.name + '</td></tr>');
+                      }
+                   }); 
+                 });
               }, function (e) {
                   sweetAlert("Error reading " + zipfile + " : " + e.message);
               });
