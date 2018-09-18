@@ -1,32 +1,19 @@
-    jQuery.event.props.push('dataTransfer');
+    //jQuery.event.props.push('dataTransfer');
     
     // projectIndex catalogs all sequences and chains held in local Storage
-    var projectIndex = JSON.parse(localStorage.getItem("projectIndex"));  
-    if (!projectIndex) {
-        projectIndex=[];
-    }
-
-    var interval = null;
-    var pos=0;
+    //var projectIndex = JSON.parse(localStorage.getItem("projectIndex"));  
+    //if (!projectIndex) {
+    //    projectIndex=[];
+    //}
     
 
     // Create new "hSounds" array for the project
-    var hSounds=[];
-    for (i in project.sounds) {
-        hSounds[i]=new Howl({format: project.sounds[i].format, volume: project.sounds[i].volume, src: url+"/"+project.sounds[i].id, stereo: project.sounds[i].stereo});
-    }  
+    //var hSounds=[];
+    //for (i in project.sounds) {
+    //    hSounds[i]=new Howl({format: project.sounds[i].format, volume: project.sounds[i].volume, src: url+"/"+project.sounds[i].id, stereo: project.sounds[i].stereo});
+    //}  
 
-    // Create pop-up dialog for SAVE, LOAD etc
-    var popup=$('#popup-dialog').dialog({
-        autoOpen: false,
-        modal: true,
-        width: 620,
-        height: 350,
-        open: function (event, ui) {
-        },
-        close: function (event, ui) { 
-        }
-    });   
+
 
     // function for dynamic sorting
     function compareValues(key, order) {
@@ -101,6 +88,7 @@
         } else {
             compareValue=value;
         }
+        /*
         for (i in projectIndex) {
             switch (property) {
                 case "name": if (projectIndex[i].name.toUpperCase()==compareValue) {exists=true;}; break;
@@ -113,6 +101,7 @@
                 return i;
             }
         }
+        */
         return null;
     }   
 
@@ -126,7 +115,7 @@
         let key="";
         let abbr="";
         let lastModified="";
-
+        /*
         for (i in projectIndex) {
             if (projectIndex[i].chain.length>0) {
                 for (j in projectIndex[i].chain) {
@@ -162,7 +151,8 @@
                     drag+='<span draggable="true" id="'+key+'" class="dragAbbr-btn" title="'+name+'&nbsp;'+lastModified+'">'+abbr+'</span>';
                 }
             }
-        }         
+        } 
+        */
         if (nb==0) {
             drag+="<p>No Sequences Saved</p>";
         } else {
@@ -171,29 +161,10 @@
         drag+="</div>";
         $("#dragfrom").replaceWith(drag);
     };
-
-    // Get chain
-    function getChain() {
-        let chains=[];
-        let chains_pos=0;
-        $(".chain-item").each(function(index,value) {
-            let key=$(this).data("key");
-            let slot=$(this).parent().prop("id");
-            let loop='';
-            if ($(this).parent().hasClass("yellow")) {
-                loop="yellow";
-            }
-            chains.push({"key":key,"slot":slot,"loop":loop});
-            if ($(this).parent().hasClass("dropto-orange")) {
-                chains_pos=index;
-            }
-        }
-        return{"chains":chains, "chains_pos":chains_pos};                      
-    };
     
 
     // Play each note in the sequence array. Notes with no volume or muted are not played.
-    function playSequence(chains, chains_pos) {
+    function playSequence() {
         let single=false;
         for (j in project.sounds) {
             if (project.sounds[j].single) {
@@ -249,13 +220,12 @@
         }
     }
 
-    // Play sample sound
     function playSound(id, format) {
         let sample=new Howl({format: format, volume: 0.5, src: url+"/"+id});
         sample.play();
     }    
     
-    // Configure Context menu
+    /*
     $.contextMenu({
         selector: '.btn-sound', 
         trigger: "left",
@@ -293,13 +263,12 @@
         },
         items: sounds
     });
+    */
         
-    // String method to pad with specified character(s) to the left. Use this to format time as HH:MM with keading zero.
     String.prototype.paddingLeft = function (paddingValue) {
         return String(paddingValue + this).slice(-paddingValue.length);
     };
     
-    // String hashcode method returns a numeric hash for the string. Useful when comparing before/after complex objects to determine if any change.
     String.prototype.hashCode = function() {
         let hash=0;
         let char="";

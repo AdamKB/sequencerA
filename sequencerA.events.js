@@ -1,141 +1,102 @@
 $(function() {
-    
+
     "use strict";
     
     var currentChain={"key":0,"name":""};
     var currentSequence={"key":0,"name":""};
 
-    //Show component sequences in Save/Load dialog
-    $("body").on("click",".fa-angle-right",function() {
-        let tr=$(this).closest("tr");
-        let key=tr.data("key");
-        let that=$(this);
 
-        that.toggleClass("fa-angle-right fa-angle-down");
-
-        if (that.hasClass("fa-caret-down")) {
-            that.addClass("downArrow");
-        }
-
-        for (i in projectIndex) {
-            if (projectIndex[i].key==key) {
-                let chainArray=projectIndex[i].chain;
-                for (j in chainArray) {
-                    let seqKey=chainArray[j].key;
-                    for (i in projectIndex) {
-                        if (projectIndex[i].key==seqKey) {
-                            let compseq=projectIndex[i];
-                            let newRow='<tr data-key='+compseq.key+' class="'+key+'"><td><span class="fa fa-upload"></span></td><td>'+compseq.name+'</td><td>'+compseq.abbr+'</td><td>'+compseq.last_modified+'</td><td><span class="fa fa-code"></span></td></tr>';
-                            tr.after(newRow);
-                        }
-                    }
-                }
+    //Click sample to open library & replace
+    $(".btn-sound").on("click",function() {
+        let html='';
+        //let title=$("#ui-id-1");
+        
+        html+='<div id="sampleContainer">';
+        html+='<table id="categoryContainer">';
+        
+        for (i in sounds) {
+            let name=sounds[i].name;
+            let sampleCat='<tr><td class="categoryBox">'+name+'</td></tr>';
+            if (sounds) {
+                $("#categoryContainer").append(html+=sampleCat);
             }
         }
-    });
-    
-    $("body").on("click",".fa-angle-down",function() {
-        let that=$(this);
-        let tr=$(this).closest("tr");
-        let key=tr.data("key");        
-
-        $("#popup-table tr." + key).remove();
         
-        that.toggleClass("fa-angle-down fa-angle-right");
-    });
-    
-    //Show component sequences in Chain button
-    $("body").on("click",".fa-caret-down",function() {
-            let key=$(this).parent().attr("id");
-            let html='';
-            let compseq=projectIndex[i];
-
-            html+='<table id="popup-table">';
-            html+='<thead><tr>';
-            html+='<th>Load</th>';
-            html+='<th>Name</th>';
-            html+='<th>Abbr</th>';
-            html+='<th>Last Modified</th>';
-            html+='<th><i class="fa fa-cube"></i></th>';
-            html+='</tr></thead>';
+        html+='</table>';
+        html+='<table id="singleContainer">';
+        
+        $("body").on("click",".categoryBox",function() {
+            $("#singleContainer").empty();
             
-            for (i in projectIndex) {
-                if (projectIndex[i].key==key) {
-                    let chainArray=projectIndex[i].chain;
-                    for (j in chainArray) {
-                        let seqKey=chainArray[j].key;
-                        for (i in projectIndex) {
-                            let slot=chainArray[j].slot;
-                            let slotnumber=slot.slice(-2);
-                            slotnumber=slotnumber.replace(/_/i,"");
-                            if (projectIndex[i].key==seqKey) {
-                                let compseq=projectIndex[i];
-                                html+='<tr data-key='+compseq.key+'><td><span class="fa fa-upload" data-context="drag"></span></td><td>'+compseq.name+'</td><td>'+compseq.abbr+'</td><td>'+compseq.last_modified+'</td><td>'+slotnumber+'</td></tr>';
-                            }
+            let thisID=$(this).text();
+            
+            for (i in sounds) {
+                let soundsI=sounds[i].name;
+                if (soundsI==thisID) {
+                    let category=sounds[i];
+                    let items=category.items;
+                    console.log(items);
+                    for (i in items) {
+                        if (sounds) {
+                            let sampleName=items[i].name;
+                            let sampleSingle='<tr><td class="singleBox">'+sampleName+'</td></tr>';
+                            $("#singleContainer").append(sampleSingle);
+                            console.log(sampleName);
                         }
                     }
                 }
             }
-            html+='</table>';
-            //html+='</div>';  
+        });
         
-        popup.html(html);
-        popup.dialog('open');
+        /*
+        $("body").on("click",".singleBox",function() {
+            let selected='';
+        
+            if ($(this).hasClass("singleBox")) {
+                selected=$(this).text();
+            } else {
+                selected='';
+            }
+        });
+        */
+        
+        html+='</table>';
+        html+='</div>'; //sampleContainer end
+        
+        /*
+        title.empty();
+        title.append("Replace "+$(this).text()+" with: "+selected);
+        title.append('<span id="okay">OK</span>');
+        */
+        
+    popup.html(html);     
+    popup.dialog('open');
     });
-    
-    // Generic help function
-    var help = $("#help-text");
-    help.addClass("help-box");
-
-    $("#ht").addClass("ht-hide");
-    
-    function showHelp() {
-        $("[data-help]").hover(
-            function() {
-            let title=$(this).data("help");
-            help.text('').append(title);
-         }, function() {
-            help.text('');
-         });
-    };
-    
-    function hideHelp() {
-        $("[data-help]").hover(function() {
-            help.text('').append('');
-         });
-    };
-    
-    $("#ht").click(function() {
-        $(this).toggleClass("ht-show");
-        if ($(this).hasClass("ht-show")) {
-            hideHelp();
-        } else {
-            showHelp();
-        }
-    });
-    
-    showHelp();
-    
     
     // Import zip file button
     $("#btn-import").on("click", function(){
         $("#importfile").trigger("click");
     });
     
-    // Clear chain button 
+    // Clear chain button     bug
     $("#ht2").on("click", function clearChain() {
-        sweetAlert({
-            title: "Remove all sequences from current chain?",
-            text: "This will not delete sequences permanently.",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true
-        })
-        .then((willClear) => {
-            if (willClear) {
-                $(".fa-times").trigger("click");
-            }
-        }); 
+        $(".fa-times").trigger("click");
+        if ($(".dropto").hasClass("dropto-grey")) {
+            sweetAlert({
+                title: "Remove all sequences from current chain?",
+                text: "This will not delete sequences permanently.",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true
+            })
+            .then((willClear) => {
+                if (willClear) {
+                    $(".fa-times").trigger("click");
+                }
+            });
+        } else {
+            $(".fa-times").trigger("click");
+        }
     });
     
     fillDragfrom();
@@ -184,7 +145,31 @@ $(function() {
         let key = event.dataTransfer.getData('text/plain');
         let tgt=$(event.currentTarget);
         let indx=existsIndex("key",key);
+        let tgtKey=tgt.children(".chain-item").data("key");
+        for (i in projectIndex) {
+            if (tgtKey==projectIndex[i].key) {
+                var tgtSeq=projectIndex[i];
+            }
+        }
+        console.log(tgtSeq);                                    //bug
         if (projectIndex[indx].chain.length==0) {
+            if (tgt.hasClass("dropto-grey")) {
+                 sweetAlert({
+                title: "Replace sequence in chain?",
+                text: "",    //bug
+                icon: "warning",
+                buttons: true,
+                dangerMode: true
+            })
+                .then((willReplace) => {
+                    if (willReplace) {
+                        tgt.empty();
+                        tgt.append('<span data-key="'+key+'" id="'+key+'" class="chain-item" draggable="true">'+projectIndex[indx].abbr+'</span><span class="fa fa-times" title="Remove from Chain"></span><span class="fa fa-refresh" title="Loop/ Edit Sequence"></span>');
+                        loadSequence(key,false);
+                        event.preventDefault();
+                    }
+                })
+            } else {
             tgt.empty();
             tgt.append('<span data-key="'+key+'" id="'+key+'" class="chain-item" draggable="true">'+projectIndex[indx].abbr+'</span><span class="fa fa-times" title="Remove from Chain"></span><span class="fa fa-refresh" title="Loop/ Edit Sequence"></span>');
             loadSequence(key,false);
@@ -193,6 +178,7 @@ $(function() {
             $(".dropnum").removeClass("dropnum-white");
             tgt.addClass("dropto-grey dropto-orange");
             tgt.prev($(".dropnum")).addClass("dropnum-white dropnum-full");
+            }
         } else {
             if ($(".dropto").hasClass("dropto-grey")) {
                 sweetAlert("Clear current chain and load '"+projectIndex[indx].name+"' ?");
@@ -217,7 +203,7 @@ $(function() {
             $("#sound"+i).text(project.sounds[i].name);
             $("#volume"+i).val(project.sounds[i].volume);
             $("#stereo"+i).val(project.sounds[i].stereo);
-            hSounds[i]=new Howl({format: project.sounds[i].format, volume: project.sounds[i].volume, src: url+"/"+project.sounds[i].id, stereo: project.sounds[i].stereo});
+            hSounds[i]=new Howl({format: project.sounds[i].format, volume: project.sounds[i].volume, src: "", stereo: project.sounds[i].stereo});
             for (let j=0; j<sequenceLength; j++) {
                 if (project.sounds[i].sequence[j]) {
                     $("tr[data-y="+i+"]").find("[data-x="+j+"]").addClass("selected");
@@ -473,7 +459,7 @@ $(function() {
             while(i--) {
                 if ($("#dropnum_"+i).hasClass("dropnum-full")) {
                     if (i==dropnumLength) {
-                        sweetAlert("noRoom");
+                        sweetAlert("All 16 chain slots in use.");
                         return;
                     }
                     i++;
@@ -773,8 +759,8 @@ $(function() {
         if (icon.hasClass("fa-pause")) {
             clearInterval(interval);
         } else {
-            let chains=[];
-            let chains_pos=0;
+            chains=[];
+            chains_pos=0;
             $(".chain-item").each(function(index,value) {
                 let key=$(this).data("key");
                 let slot=$(this).parent().prop("id");
@@ -794,7 +780,7 @@ $(function() {
                     loadSequence(chains[chains_pos].key,false);
                 }
             }
-            interval=setInterval(function() {playSequence(chains, chains_pos)}, 60000/(project.bpm * 4));
+            interval=setInterval(playSequence, 60000/(project.bpm * 4));
         }
         icon.toggleClass('fa-play fa-pause');
     });
@@ -851,41 +837,5 @@ $(function() {
             }
         }
     });  
-    
-    // Remove local Storage - reset application as if first use 
-    $("#clearAll").on("click",function() {
-        sweetAlert({
-            title: "Sure you want to reset all localStorage items?",
-            text: "This resets storage to status as if visiting application for first time.",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true
-        })
-        .then((willClear) => {
-            if (willClear) {
-                localStorage.clear();
-                window.location.reload();
-            }
-        });            
-    });    
-    // Dump local Storage - test only
-    $("#dump").on("click",function() {
-        let html=`<table id="popup-table">
-                <thead>
-                    <tr>
-                       <th>key</th><th>name</th><th>abbr</th><th>chain</th><th>last_modified</th><th>last_modified_unix</th>
-                    </tr>
-                </thead>`;  
-        let chain="";
-        for (i in projectIndex) {
-            chain="";
-            for (j in projectIndex[i].chain) {
-                chain+=projectIndex[i].chain[j].key+",";    
-            }
-            html+=`<tr><td>${projectIndex[i].key}</td><td>${projectIndex[i].name}</td><td>${projectIndex[i].abbr}</td><td>${chain}</td><td>${projectIndex[i].last_modified}</td><td>${projectIndex[i].last_modified_unix}</td><tr>`;
-        }
-        html+="</table>";
-        popup.html(html);
-        popup.dialog('open');
-    });        
+      
 });

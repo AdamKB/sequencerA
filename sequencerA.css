@@ -1,3 +1,68 @@
+/*Replace sample dialog*/
+
+#sampleContainer {
+    width: 100%;
+    height: 99%;
+    background-color: #484848;
+}
+
+#categoryContainer, #singleContainer {
+    width: 50%;
+    height: 100%;
+    overflow-y: auto;
+    border-collapse: collapse;
+}
+
+#categoryContainer {
+    float: left;
+}
+
+#singleContainer {
+    float: right;
+}
+
+.categoryBox, .singleBox {
+    border: 2px solid black;
+    width: 100%;
+    background-color: #C0C0C0;
+    color: black;
+    font-size: 1.8rem;
+    text-align: left;
+    padding: 0.4rem;
+    cursor: pointer;
+}
+
+#ui-id-1 {
+    color: white;
+}
+
+.title {
+    color: #ffea01;
+    font-family: 'Brush Script Std';
+    font-size: 23px;
+}
+
+/*Page Background*/
+body{
+    background-color: #333333;
+}
+
+/*Header*/
+#t_Header > div {
+    background-color: #1b1b1b;
+}
+
+/*Footer*/
+#t_Body_content > footer {
+}
+
+/*Inner background*/
+#t_Body_content > div.t-Body-contentInner {
+}
+
+#t_Body_title {
+}
+
 #cover {
     width: 100%;
     height: 100%;
@@ -14,6 +79,7 @@
 
 #help-text {
     height: 118px;
+    background-color: #b4b4b4;
 }
 
 .ht-show::before {
@@ -72,13 +138,13 @@
     color: black;
 }
 
-/* Chain stuff */
+/* Chain stuff. */
 
 .chain-btn {
     display: flex;
-    /*justify-content: center;*/
     flex-direction: column;
-    background-color: tomato;
+    /*background-color: #fe0000;*/
+    background-color: #ffa600;
     color: black;
     font-weight: bold;
     width: 40px;
@@ -215,6 +281,8 @@
     display: flex;
     text-align: center;
     vertical-align: middle;
+    background-color: #b4b4b4;
+    border-left: 2px solid black;    
 }
 
 #ht2 {
@@ -225,11 +293,6 @@
 
 #meter td:last-child:active {
     background-color: #525252;
-}
-
-#main-table > tbody > tr:nth-child(1) > th:nth-child(9) {
-    background-color: #b4b4b4;
-    border-left: 2px solid black;
 }
 
 #importfile {
@@ -408,14 +471,20 @@ input[type=range]:focus {
     text-align: center;
 }
 
-.fa-trash-o, .fa-upload, .fa-code, #save, #exportall {
+.fa-trash-o, .fa-upload, .fa-code, #save, #exportall, #okay {
     color: black;
     cursor: pointer;
     background: radial-gradient(#01fbbc, #00a06c);
-    padding: 0.6rem;
+    padding: 1.2rem;
     border-radius: 5px;
     font-weight: bold;
     border: 1px solid black;
+}
+
+#okay {
+    border: 2px solid black;
+    padding: 0.6rem;
+    float: right;
 }
 
 .fa-trash-o:active, .fa-upload:active, .fa-code:active {
@@ -609,6 +678,7 @@ button {
     width: 100%;
     border-collapse: collapse;
     border: 2px solid black;
+    box-shadow: 0px 0px 27px black;
 }
 
 #main-table tr:nth-child(1) {
@@ -684,10 +754,16 @@ button {
     width: 25px;
     border: 2px solid black;
     background: radial-gradient(#01fbbc, #00b37a);
-    vertical-align: center;
-    margin: auto;
-    //display: flex;
-    //flex-direction: column;
+    //vertical-align: center;
+    //margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.fa-minus, .fa-plus {
+    margin-top: 4px;
+    margin-bottom: 4px;
 }
 
 .muted {
@@ -695,7 +771,6 @@ button {
 }
 
 .single {
-    /* background-color: #01e0ff; */
     background: #ffea01;
 }
 
