@@ -11,14 +11,14 @@
     <script src="sequencerA.events.js"></script>
     <script src="sequencerA.functions.js"></script>
     <link rel="stylesheet" type="text/css" href="sequencerA.css">
-        <link rel="icon" href="favicon.ico" type="image/x-icon"> 
+    <link rel="icon" href="favicon.ico" type="image/x-icon"> 
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> 
 </head>
 
 <body>
     <script>
-        var sequenceLength=32;
-
-        var project={chain: [], chainkey: 0, sequencekey: 0, bpm:120, sounds:[]},
+        var sequenceLength=32,
+            project={chain: [], chainkey: 0, sequencekey: 0, bpm:120, sounds:[]},
             hSounds=[];
     
         var interval = null;
@@ -30,6 +30,7 @@
   <img id="logo" height="30">
   
   <div id="popup-dialog"></div>
+    
        <table id="main-table">  
         <tr>
           <th colspan="3" class="colA">
@@ -75,7 +76,16 @@
           </th>          
         </tr>
         <tr id="meter">
-          <td id="ht" colspan="3"></td><td class="current" data-x="0"><div class="sep-num"></div><div class="sep-number">1</div></td><td data-x="1"></td><td data-x="2"><div class="sep-sm">|</div></td><td data-x="3"></td><td data-x="4"><div class="sep-lg">|</div></td><td data-x="5"></td><td data-x="6"><div class="sep-sm">|</div></td><td data-x="7"></td><td data-x="8"><div class="sep-num"></div><div class="sep-number">2</div></td><td data-x="9"></td><td data-x="10"><div class="sep-sm">|</div></td><td data-x="11"></td><td data-x="12"><div class="sep-lg">|</div></td><td data-x="13"></td><td data-x="14"><div class="sep-sm">|</div></td><td data-x="15"></td><td data-x="16"><div class="sep-num"></div><div class="sep-number">3</div></td><td data-x="17"></td><td data-x="18"><div class="sep-sm">|</div></td><td data-x="19"></td><td data-x="20"><div class="sep-lg">|</div></td><td data-x="21"></td><td data-x="22"><div class="sep-sm">|</div></td><td data-x="23"></td><td data-x="24"><div class="sep-num"></div><div class="sep-number">4</div></td><td data-x="25"></td><td data-x="26"><div class="sep-sm">|</div></td><td data-x="27"></td><td data-x="28"><div class="sep-lg">|</div></td><td data-x="29"></td><td data-x="30"><div class="sep-sm">|</div></td><td data-x="31"></td><td id="ht2" colspan="4" data-help="Removes all Sequences from Chain.">Clear Chain.</td></tr><tr data-y="0">
+            <td id="ht" colspan="3"></td>
+            <td class="current" data-x="0"><div class="sep-num"></div><div class="sep-number">1</div></td>
+            <td data-x="1"></td>
+            <td data-x="2"><div class="sep-sm">|</div></td>
+            <td data-x="3"></td>
+            <td data-x="4"><div class="sep-lg">|</div></td>
+            <td data-x="5"></td>
+            <td data-x="6"><div class="sep-sm">|</div></td>
+            <td data-x="7"></td><td data-x="8"><div class="sep-num"></div><div class="sep-number">2</div></td><td data-x="9"></td><td data-x="10"><div class="sep-sm">|</div></td><td data-x="11"></td><td data-x="12"><div class="sep-lg">|</div></td><td data-x="13"></td><td data-x="14"><div class="sep-sm">|</div></td><td data-x="15"></td><td data-x="16"><div class="sep-num"></div><div class="sep-number">3</div></td><td data-x="17"></td><td data-x="18"><div class="sep-sm">|</div></td><td data-x="19"></td><td data-x="20"><div class="sep-lg">|</div></td><td data-x="21"></td><td data-x="22"><div class="sep-sm">|</div></td><td data-x="23"></td><td data-x="24"><div class="sep-num"></div><div class="sep-number">4</div></td><td data-x="25"></td><td data-x="26"><div class="sep-sm">|</div></td><td data-x="27"></td><td data-x="28"><div class="sep-lg">|</div></td><td data-x="29"></td><td data-x="30"><div class="sep-sm">|</div></td><td data-x="31"></td><td id="ht2" colspan="4" data-help="Removes all Sequences from Chain.">Clear Chain.</td></tr>
+           <tr data-y="0">
                             <td class="btn-sound colAA" id="sound0" data-help="Click to change sample.">Bongo1</td>
                             <td class="centre colAB">
                               <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
@@ -90,7 +100,45 @@
                                 <label for="stereo0">P</label>
                                 <input class="btn-pan" id="stereo0" type="range" min="-1" max="1" step="0.1">
                               </div>
-                            </td><td class="darker"><button type="button" class="cell" data-x="0"></button></td><td class="darker"><button type="button" class="cell" data-x="1"></button></td><td class="darker"><button type="button" class="cell" data-x="2"></button></td><td class="darker"><button type="button" class="cell" data-x="3"></button></td><td><button type="button" class="cell" data-x="4"></button></td><td><button type="button" class="cell" data-x="5"></button></td><td><button type="button" class="cell" data-x="6"></button></td><td><button type="button" class="cell" data-x="7"></button></td><td class="darker"><button type="button" class="cell" data-x="8"></button></td><td class="darker"><button type="button" class="cell" data-x="9"></button></td><td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td><td class="chain chain-col1" rowspan="2"><div class="dropnum" id="dropnum_1"><span class="fa fa-cube"></span>1</div><div class="dropto" id="dropto_1"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_2"><span class="fa fa-cube"></span>2</div><div class="dropto" id="dropto_2"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_3"><span class="fa fa-cube"></span>3</div><div class="dropto" id="dropto_3"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_4"><span class="fa fa-cube"></span>4</div><div class="dropto" id="dropto_4"></div></td></tr><tr data-y="1">
+                            </td>
+               <td class="darker"><button type="button" class="cell" data-x="0"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="1"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="2"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="3"></button></td>
+               <td><button type="button" class="cell" data-x="4"></button></td>
+               <td><button type="button" class="cell" data-x="5"></button></td>
+               <td><button type="button" class="cell" data-x="6"></button></td>
+               <td><button type="button" class="cell" data-x="7"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="8"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="9"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="10"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="11"></button></td>
+               <td><button type="button" class="cell" data-x="12"></button></td>
+               <td><button type="button" class="cell" data-x="13"></button></td>
+               <td><button type="button" class="cell" data-x="14"></button></td>
+               <td><button type="button" class="cell" data-x="15"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="16"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="17"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="18"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="19"></button></td>
+               <td><button type="button" class="cell" data-x="20"></button></td>
+               <td><button type="button" class="cell" data-x="21"></button></td>
+               <td><button type="button" class="cell" data-x="22"></button></td>
+               <td><button type="button" class="cell" data-x="23"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="24"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="25"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="26"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="27"></button></td>
+               <td><button type="button" class="cell" data-x="28"></button></td>
+               <td><button type="button" class="cell" data-x="29"></button></td>
+               <td><button type="button" class="cell" data-x="30"></button></td>
+               <td><button type="button" class="cell" data-x="31"></button></td>
+               <td class="chain chain-col1" rowspan="2"><div class="dropnum" id="dropnum_1"><span class="fa fa-cube"></span>1</div><div class="dropto" id="dropto_1"></div></td>
+               <td class="chain" rowspan="2"><div class="dropnum" id="dropnum_2"><span class="fa fa-cube"></span>2</div><div class="dropto" id="dropto_2"></div></td>
+               <td class="chain" rowspan="2"><div class="dropnum" id="dropnum_3"><span class="fa fa-cube"></span>3</div><div class="dropto" id="dropto_3"></div></td>
+               <td class="chain" rowspan="2"><div class="dropnum" id="dropnum_4"><span class="fa fa-cube"></span>4</div><div class="dropto" id="dropto_4"></div></td>
+           </tr>
+           <tr data-y="1">
                             <td class="btn-sound colAA" id="sound1" data-help="Click to change sample.">Cowbell1</td>
                             <td class="centre colAB">
                               <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
@@ -105,7 +153,18 @@
                                 <label for="stereo1">P</label>
                                 <input class="btn-pan" id="stereo1" type="range" min="-1" max="1" step="0.1">
                               </div>
-                            </td><td class="darker"><button type="button" class="cell" data-x="0"></button></td><td class="darker"><button type="button" class="cell" data-x="1"></button></td><td class="darker"><button type="button" class="cell" data-x="2"></button></td><td class="darker"><button type="button" class="cell" data-x="3"></button></td><td><button type="button" class="cell" data-x="4"></button></td><td><button type="button" class="cell" data-x="5"></button></td><td><button type="button" class="cell" data-x="6"></button></td><td><button type="button" class="cell" data-x="7"></button></td><td class="darker"><button type="button" class="cell" data-x="8"></button></td><td class="darker"><button type="button" class="cell" data-x="9"></button></td><td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td></tr><tr data-y="2">
+                            </td>
+               <td class="darker"><button type="button" class="cell" data-x="0"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="1"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="2"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="3"></button></td>
+               <td><button type="button" class="cell" data-x="4"></button></td>
+               <td><button type="button" class="cell" data-x="5"></button></td>
+               <td><button type="button" class="cell" data-x="6"></button></td>
+               <td><button type="button" class="cell" data-x="7"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="8"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="9"></button></td>
+               <td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td></tr><tr data-y="2">
                             <td class="btn-sound colAA" id="sound2" data-help="Click to change sample.">Cymbal1</td>
                             <td class="centre colAB">
                               <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
@@ -214,7 +273,7 @@
     </table>
   
   <footer>
-    <p>Created by Mark R. Brown, 2018</p>
+    <p>Created by Adam K. Brown, Mark R. Brown, 2018</p>
     <p id="version"></p> 
   </footer>
   
