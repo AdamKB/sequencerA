@@ -3,278 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://use.fontawesome.com/9d6b0dab50.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/howler@2.0.15/dist/howler.min.js"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script src="jszip.min.js"></script>
     <script src="sequencerA.indexedDB.js"></script>
     <script src="sequencerA.events.js"></script>
     <script src="sequencerA.functions.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" type="text/css" href="sequencerA.css">
     <link rel="icon" href="favicon.ico" type="image/x-icon"> 
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"> 
 </head>
 
 <body>
-    <script>
-        var sequenceLength=32,
-            project={chain: [], chainkey: 0, sequencekey: 0, bpm:120, sounds:[]},
-            hSounds=[];
-    
-        var interval = null;
-        var pos=0;
-        var chains=[];
-        var chains_pos=0;    
-    </script>
-  
+
   <img id="logo" height="30">
   
   <div id="popup-dialog"></div>
     
-       <table id="main-table">  
-        <tr>
-          <th colspan="3" class="colA">
-            <div id="help-text"></div>
-          </th>
-          <th colspan="8" class="colB">
-            <button type="button" id="btn-save" data-help="Save the current sequence.">SAVE</button>
-            <br>
-            <button type="button" id="btn-load" data-help="Load an existing sequence.">LOAD</button>
-          </th>
-          <th colspan="4" class="colC">
-            <button type="button" id="start-stop" data-help="Play/Pause."><span class="fa fa-play fa-2x"></span></button>
-          </th>
-          <th colspan="2" class="colD">
-            <div class="btn-bpm">
-              <button type="button" data-increment="-10" class="bpm-num" data-help="Decrease BPM by 10.">10</button>
-              <span class="fa fa-minus"></span>
-              <button type="button" data-increment="-1" class="bpm-num" data-help="Decrease BPM by 1.">1</button>
-            </div>
-          </th>
-          <th colspan="4" class="colE">
-            <div id="bpm"  data-help="Tempo: Beats per minute (BPM).">120</div>
-          </th>
-          <th></th>
-          <th class="colF">
-            <div class="btn-bpm">
-              <button type="button" data-increment="10" class="bpm-num" data-help="Increase BPM by 10.">10</button>
-              <span class="fa fa-plus"></span>
-              <button type="button" data-increment="1" class="bpm-num"  data-help="Increase BPM by 1.">1</button>
-            </div>          
-          </th>
-          <th colspan="4" class="colG">
-            <button type="button" id="reset" data-help="Reset yellow marker to 1 (start of sequence)."><span class="fa fa-backward fa-2x"></span></button>
-          </th>
-          <th colspan="8" class="colH">
-            <input id="importfile" type="file" multiple accept=".zip">
-            <button type="button" id="btn-import" data-help="Import sequences saved in zip file (see Export).">IMPORT</button>
-            <br>
-            <button type="button" id="btn-clear" data-help="Remove all orange cells, reset volume & panning and return to default sound samples.">CLEAR</button>
-          </th>  
-          <th colspan="4" class="colI">
-            <div id="dragfrom"></div>
-          </th>          
-        </tr>
-        <tr id="meter">
-            <td id="ht" colspan="3"></td>
-            <td class="current" data-x="0"><div class="sep-num"></div><div class="sep-number">1</div></td>
-            <td data-x="1"></td>
-            <td data-x="2"><div class="sep-sm">|</div></td>
-            <td data-x="3"></td>
-            <td data-x="4"><div class="sep-lg">|</div></td>
-            <td data-x="5"></td>
-            <td data-x="6"><div class="sep-sm">|</div></td>
-            <td data-x="7"></td><td data-x="8"><div class="sep-num"></div><div class="sep-number">2</div></td><td data-x="9"></td><td data-x="10"><div class="sep-sm">|</div></td><td data-x="11"></td><td data-x="12"><div class="sep-lg">|</div></td><td data-x="13"></td><td data-x="14"><div class="sep-sm">|</div></td><td data-x="15"></td><td data-x="16"><div class="sep-num"></div><div class="sep-number">3</div></td><td data-x="17"></td><td data-x="18"><div class="sep-sm">|</div></td><td data-x="19"></td><td data-x="20"><div class="sep-lg">|</div></td><td data-x="21"></td><td data-x="22"><div class="sep-sm">|</div></td><td data-x="23"></td><td data-x="24"><div class="sep-num"></div><div class="sep-number">4</div></td><td data-x="25"></td><td data-x="26"><div class="sep-sm">|</div></td><td data-x="27"></td><td data-x="28"><div class="sep-lg">|</div></td><td data-x="29"></td><td data-x="30"><div class="sep-sm">|</div></td><td data-x="31"></td><td id="ht2" colspan="4" data-help="Removes all Sequences from Chain.">Clear Chain.</td></tr>
-           <tr data-y="0">
-                            <td class="btn-sound colAA" id="sound0" data-help="Click to change sample.">Bongo1</td>
-                            <td class="centre colAB">
-                              <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
-                              <button type="button" class="btn-mute" data-help="'Mute' button: turn off audio for channels with M selected.">M</button>
-                            </td>
-                            <td class="colAC">
-                              <div  data-help="Volume of channel: Left = 0 / Right = 10.">
-                                <label for="volume0">V</label>
-                                <input class="btn-volume" id="volume0" type="range" min="0" max="1" step="0.1">
-                              </div>
-                              <div data-help="Panning of channel: Left/Right.">
-                                <label for="stereo0">P</label>
-                                <input class="btn-pan" id="stereo0" type="range" min="-1" max="1" step="0.1">
-                              </div>
-                            </td>
-               <td class="darker"><button type="button" class="cell" data-x="0"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="1"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="2"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="3"></button></td>
-               <td><button type="button" class="cell" data-x="4"></button></td>
-               <td><button type="button" class="cell" data-x="5"></button></td>
-               <td><button type="button" class="cell" data-x="6"></button></td>
-               <td><button type="button" class="cell" data-x="7"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="8"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="9"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="10"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="11"></button></td>
-               <td><button type="button" class="cell" data-x="12"></button></td>
-               <td><button type="button" class="cell" data-x="13"></button></td>
-               <td><button type="button" class="cell" data-x="14"></button></td>
-               <td><button type="button" class="cell" data-x="15"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="16"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="17"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="18"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="19"></button></td>
-               <td><button type="button" class="cell" data-x="20"></button></td>
-               <td><button type="button" class="cell" data-x="21"></button></td>
-               <td><button type="button" class="cell" data-x="22"></button></td>
-               <td><button type="button" class="cell" data-x="23"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="24"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="25"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="26"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="27"></button></td>
-               <td><button type="button" class="cell" data-x="28"></button></td>
-               <td><button type="button" class="cell" data-x="29"></button></td>
-               <td><button type="button" class="cell" data-x="30"></button></td>
-               <td><button type="button" class="cell" data-x="31"></button></td>
-               <td class="chain chain-col1" rowspan="2"><div class="dropnum" id="dropnum_1"><span class="fa fa-cube"></span>1</div><div class="dropto" id="dropto_1"></div></td>
-               <td class="chain" rowspan="2"><div class="dropnum" id="dropnum_2"><span class="fa fa-cube"></span>2</div><div class="dropto" id="dropto_2"></div></td>
-               <td class="chain" rowspan="2"><div class="dropnum" id="dropnum_3"><span class="fa fa-cube"></span>3</div><div class="dropto" id="dropto_3"></div></td>
-               <td class="chain" rowspan="2"><div class="dropnum" id="dropnum_4"><span class="fa fa-cube"></span>4</div><div class="dropto" id="dropto_4"></div></td>
-           </tr>
-           <tr data-y="1">
-                            <td class="btn-sound colAA" id="sound1" data-help="Click to change sample.">Cowbell1</td>
-                            <td class="centre colAB">
-                              <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
-                              <button type="button" class="btn-mute" data-help="'Mute' button: turn off audio for channels with M selected.">M</button>
-                            </td>
-                            <td class="colAC">
-                              <div  data-help="Volume of channel: Left = 0 / Right = 10.">
-                                <label for="volume1">V</label>
-                                <input class="btn-volume" id="volume1" type="range" min="0" max="1" step="0.1">
-                              </div>
-                              <div data-help="Panning of channel: Left/Right.">
-                                <label for="stereo1">P</label>
-                                <input class="btn-pan" id="stereo1" type="range" min="-1" max="1" step="0.1">
-                              </div>
-                            </td>
-               <td class="darker"><button type="button" class="cell" data-x="0"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="1"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="2"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="3"></button></td>
-               <td><button type="button" class="cell" data-x="4"></button></td>
-               <td><button type="button" class="cell" data-x="5"></button></td>
-               <td><button type="button" class="cell" data-x="6"></button></td>
-               <td><button type="button" class="cell" data-x="7"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="8"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="9"></button></td>
-               <td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td></tr><tr data-y="2">
-                            <td class="btn-sound colAA" id="sound2" data-help="Click to change sample.">Cymbal1</td>
-                            <td class="centre colAB">
-                              <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
-                              <button type="button" class="btn-mute" data-help="'Mute' button: turn off audio for channels with M selected.">M</button>
-                            </td>
-                            <td class="colAC">
-                              <div  data-help="Volume of channel: Left = 0 / Right = 10.">
-                                <label for="volume2">V</label>
-                                <input class="btn-volume" id="volume2" type="range" min="0" max="1" step="0.1">
-                              </div>
-                              <div data-help="Panning of channel: Left/Right.">
-                                <label for="stereo2">P</label>
-                                <input class="btn-pan" id="stereo2" type="range" min="-1" max="1" step="0.1">
-                              </div>
-                            </td><td class="darker"><button type="button" class="cell" data-x="0"></button></td><td class="darker"><button type="button" class="cell" data-x="1"></button></td><td class="darker"><button type="button" class="cell" data-x="2"></button></td><td class="darker"><button type="button" class="cell" data-x="3"></button></td><td><button type="button" class="cell" data-x="4"></button></td><td><button type="button" class="cell" data-x="5"></button></td><td><button type="button" class="cell" data-x="6"></button></td><td><button type="button" class="cell" data-x="7"></button></td><td class="darker"><button type="button" class="cell" data-x="8"></button></td><td class="darker"><button type="button" class="cell" data-x="9"></button></td><td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td><td class="chain chain-col1" rowspan="2"><div class="dropnum" id="dropnum_5"><span class="fa fa-cube"></span>5</div><div class="dropto" id="dropto_5"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_6"><span class="fa fa-cube"></span>6</div><div class="dropto" id="dropto_6"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_7"><span class="fa fa-cube"></span>7</div><div class="dropto" id="dropto_7"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_8"><span class="fa fa-cube"></span>8</div><div class="dropto" id="dropto_8"></div></td></tr><tr data-y="3">
-                            <td class="btn-sound colAA" id="sound3" data-help="Click to change sample.">Hat_Closed1</td>
-                            <td class="centre colAB">
-                              <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
-                              <button type="button" class="btn-mute" data-help="'Mute' button: turn off audio for channels with M selected.">M</button>
-                            </td>
-                            <td class="colAC">
-                              <div  data-help="Volume of channel: Left = 0 / Right = 10.">
-                                <label for="volume3">V</label>
-                                <input class="btn-volume" id="volume3" type="range" min="0" max="1" step="0.1">
-                              </div>
-                              <div data-help="Panning of channel: Left/Right.">
-                                <label for="stereo3">P</label>
-                                <input class="btn-pan" id="stereo3" type="range" min="-1" max="1" step="0.1">
-                              </div>
-                            </td><td class="darker"><button type="button" class="cell" data-x="0"></button></td><td class="darker"><button type="button" class="cell" data-x="1"></button></td><td class="darker"><button type="button" class="cell" data-x="2"></button></td><td class="darker"><button type="button" class="cell" data-x="3"></button></td><td><button type="button" class="cell" data-x="4"></button></td><td><button type="button" class="cell" data-x="5"></button></td><td><button type="button" class="cell" data-x="6"></button></td><td><button type="button" class="cell" data-x="7"></button></td><td class="darker"><button type="button" class="cell" data-x="8"></button></td><td class="darker"><button type="button" class="cell" data-x="9"></button></td><td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td></tr><tr data-y="4">
-                            <td class="btn-sound colAA" id="sound4" data-help="Click to change sample.">Hat_Open1</td>
-                            <td class="centre colAB">
-                              <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
-                              <button type="button" class="btn-mute" data-help="'Mute' button: turn off audio for channels with M selected.">M</button>
-                            </td>
-                            <td class="colAC">
-                              <div  data-help="Volume of channel: Left = 0 / Right = 10.">
-                                <label for="volume4">V</label>
-                                <input class="btn-volume" id="volume4" type="range" min="0" max="1" step="0.1">
-                              </div>
-                              <div data-help="Panning of channel: Left/Right.">
-                                <label for="stereo4">P</label>
-                                <input class="btn-pan" id="stereo4" type="range" min="-1" max="1" step="0.1">
-                              </div>
-                            </td><td class="darker"><button type="button" class="cell" data-x="0"></button></td><td class="darker"><button type="button" class="cell" data-x="1"></button></td><td class="darker"><button type="button" class="cell" data-x="2"></button></td><td class="darker"><button type="button" class="cell" data-x="3"></button></td><td><button type="button" class="cell" data-x="4"></button></td><td><button type="button" class="cell" data-x="5"></button></td><td><button type="button" class="cell" data-x="6"></button></td><td><button type="button" class="cell" data-x="7"></button></td><td class="darker"><button type="button" class="cell" data-x="8"></button></td><td class="darker"><button type="button" class="cell" data-x="9"></button></td><td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td><td class="chain chain-col1" rowspan="2"><div class="dropnum" id="dropnum_9"><span class="fa fa-cube"></span>9</div><div class="dropto" id="dropto_9"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_10"><span class="fa fa-cube"></span>10</div><div class="dropto" id="dropto_10"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_11"><span class="fa fa-cube"></span>11</div><div class="dropto" id="dropto_11"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_12"><span class="fa fa-cube"></span>12</div><div class="dropto" id="dropto_12"></div></td></tr><tr data-y="5">
-                            <td class="btn-sound colAA" id="sound5" data-help="Click to change sample.">Kick1</td>
-                            <td class="centre colAB">
-                              <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
-                              <button type="button" class="btn-mute" data-help="'Mute' button: turn off audio for channels with M selected.">M</button>
-                            </td>
-                            <td class="colAC">
-                              <div  data-help="Volume of channel: Left = 0 / Right = 10.">
-                                <label for="volume5">V</label>
-                                <input class="btn-volume" id="volume5" type="range" min="0" max="1" step="0.1">
-                              </div>
-                              <div data-help="Panning of channel: Left/Right.">
-                                <label for="stereo5">P</label>
-                                <input class="btn-pan" id="stereo5" type="range" min="-1" max="1" step="0.1">
-                              </div>
-                            </td><td class="darker"><button type="button" class="cell" data-x="0"></button></td><td class="darker"><button type="button" class="cell" data-x="1"></button></td><td class="darker"><button type="button" class="cell" data-x="2"></button></td><td class="darker"><button type="button" class="cell" data-x="3"></button></td><td><button type="button" class="cell" data-x="4"></button></td><td><button type="button" class="cell" data-x="5"></button></td><td><button type="button" class="cell" data-x="6"></button></td><td><button type="button" class="cell" data-x="7"></button></td><td class="darker"><button type="button" class="cell" data-x="8"></button></td><td class="darker"><button type="button" class="cell" data-x="9"></button></td><td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td></tr><tr data-y="6">
-                            <td class="btn-sound colAA" id="sound6" data-help="Click to change sample.">Perc1</td>
-                            <td class="centre colAB">
-                              <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
-                              <button type="button" class="btn-mute" data-help="'Mute' button: turn off audio for channels with M selected.">M</button>
-                            </td>
-                            <td class="colAC">
-                              <div  data-help="Volume of channel: Left = 0 / Right = 10.">
-                                <label for="volume6">V</label>
-                                <input class="btn-volume" id="volume6" type="range" min="0" max="1" step="0.1">
-                              </div>
-                              <div data-help="Panning of channel: Left/Right.">
-                                <label for="stereo6">P</label>
-                                <input class="btn-pan" id="stereo6" type="range" min="-1" max="1" step="0.1">
-                              </div>
-                            </td><td class="darker"><button type="button" class="cell" data-x="0"></button></td><td class="darker"><button type="button" class="cell" data-x="1"></button></td><td class="darker"><button type="button" class="cell" data-x="2"></button></td><td class="darker"><button type="button" class="cell" data-x="3"></button></td><td><button type="button" class="cell" data-x="4"></button></td><td><button type="button" class="cell" data-x="5"></button></td><td><button type="button" class="cell" data-x="6"></button></td><td><button type="button" class="cell" data-x="7"></button></td><td class="darker"><button type="button" class="cell" data-x="8"></button></td><td class="darker"><button type="button" class="cell" data-x="9"></button></td><td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td><td class="chain chain-col1" rowspan="2"><div class="dropnum" id="dropnum_13"><span class="fa fa-cube"></span>13</div><div class="dropto" id="dropto_13"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_14"><span class="fa fa-cube"></span>14</div><div class="dropto" id="dropto_14"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_15"><span class="fa fa-cube"></span>15</div><div class="dropto" id="dropto_15"></div></td><td class="chain" rowspan="2"><div class="dropnum" id="dropnum_16"><span class="fa fa-cube"></span>16</div><div class="dropto" id="dropto_16"></div></td></tr><tr data-y="7">
-                            <td class="btn-sound colAA" id="sound7" data-help="Click to change sample.">Snare1</td>
-                            <td class="centre colAB">
-                              <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
-                              <button type="button" class="btn-mute" data-help="'Mute' button: turn off audio for channels with M selected.">M</button>
-                            </td>
-                            <td class="colAC">
-                              <div  data-help="Volume of channel: Left = 0 / Right = 10.">
-                                <label for="volume7">V</label>
-                                <input class="btn-volume" id="volume7" type="range" min="0" max="1" step="0.1">
-                              </div>
-                              <div data-help="Panning of channel: Left/Right.">
-                                <label for="stereo7">P</label>
-                                <input class="btn-pan" id="stereo7" type="range" min="-1" max="1" step="0.1">
-                              </div>
-                            </td><td class="darker"><button type="button" class="cell" data-x="0"></button></td><td class="darker"><button type="button" class="cell" data-x="1"></button></td><td class="darker"><button type="button" class="cell" data-x="2"></button></td><td class="darker"><button type="button" class="cell" data-x="3"></button></td><td><button type="button" class="cell" data-x="4"></button></td><td><button type="button" class="cell" data-x="5"></button></td><td><button type="button" class="cell" data-x="6"></button></td><td><button type="button" class="cell" data-x="7"></button></td><td class="darker"><button type="button" class="cell" data-x="8"></button></td><td class="darker"><button type="button" class="cell" data-x="9"></button></td><td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td></tr><tr data-y="8">
-                            <td class="btn-sound colAA" id="sound8" data-help="Click to change sample.">Tom1</td>
-                            <td class="centre colAB">
-                              <button type="button" class="btn-single" data-help="'Solo' button: only play channels with S selected.">S</button>
-                              <button type="button" class="btn-mute" data-help="'Mute' button: turn off audio for channels with M selected.">M</button>
-                            </td>
-                            <td class="colAC">
-                              <div  data-help="Volume of channel: Left = 0 / Right = 10.">
-                                <label for="volume8">V</label>
-                                <input class="btn-volume" id="volume8" type="range" min="0" max="1" step="0.1">
-                              </div>
-                              <div data-help="Panning of channel: Left/Right.">
-                                <label for="stereo8">P</label>
-                                <input class="btn-pan" id="stereo8" type="range" min="-1" max="1" step="0.1">
-                              </div>
-                            </td><td class="darker"><button type="button" class="cell" data-x="0"></button></td><td class="darker"><button type="button" class="cell" data-x="1"></button></td><td class="darker"><button type="button" class="cell" data-x="2"></button></td><td class="darker"><button type="button" class="cell" data-x="3"></button></td><td><button type="button" class="cell" data-x="4"></button></td><td><button type="button" class="cell" data-x="5"></button></td><td><button type="button" class="cell" data-x="6"></button></td><td><button type="button" class="cell" data-x="7"></button></td><td class="darker"><button type="button" class="cell" data-x="8"></button></td><td class="darker"><button type="button" class="cell" data-x="9"></button></td><td class="darker"><button type="button" class="cell" data-x="10"></button></td><td class="darker"><button type="button" class="cell" data-x="11"></button></td><td><button type="button" class="cell" data-x="12"></button></td><td><button type="button" class="cell" data-x="13"></button></td><td><button type="button" class="cell" data-x="14"></button></td><td><button type="button" class="cell" data-x="15"></button></td><td class="darker"><button type="button" class="cell" data-x="16"></button></td><td class="darker"><button type="button" class="cell" data-x="17"></button></td><td class="darker"><button type="button" class="cell" data-x="18"></button></td><td class="darker"><button type="button" class="cell" data-x="19"></button></td><td><button type="button" class="cell" data-x="20"></button></td><td><button type="button" class="cell" data-x="21"></button></td><td><button type="button" class="cell" data-x="22"></button></td><td><button type="button" class="cell" data-x="23"></button></td><td class="darker"><button type="button" class="cell" data-x="24"></button></td><td class="darker"><button type="button" class="cell" data-x="25"></button></td><td class="darker"><button type="button" class="cell" data-x="26"></button></td><td class="darker"><button type="button" class="cell" data-x="27"></button></td><td><button type="button" class="cell" data-x="28"></button></td><td><button type="button" class="cell" data-x="29"></button></td><td><button type="button" class="cell" data-x="30"></button></td><td><button type="button" class="cell" data-x="31"></button></td><td class="chain chain-col1" rowspan="2" colspan="4"></td></tr>
-    </table>
+  <table id="main-table">  
+    <thead>
+      <tr>
+        <th colspan="3" class="colA">
+          <div id="help-text"></div>
+        </th>
+        <th colspan="8" class="colB">
+          <button type="button" id="btn-save" data-help="Save the current sequence.">SAVE</button>
+          <br>
+          <button type="button" id="btn-load" data-help="Load an existing sequence.">LOAD</button>
+        </th>
+        <th colspan="4" class="colC">
+          <button type="button" id="start-stop" data-help="Play/Pause."><span class="fa fa-play fa-2x"></span></button>
+        </th>
+        <th class="colD">
+          <div class="btn-bpm">
+            <button type="button" data-increment="-10" class="bpm-num" data-help="Decrease BPM by 10.">10</button>
+            <span class="fa fa-minus"></span>
+            <button type="button" data-increment="-1" class="bpm-num" data-help="Decrease BPM by 1.">1</button>
+          </div>
+        </th>
+        <th></th>
+        <th colspan="4" class="colE">
+          <div id="bpm"  data-help="Tempo: Beats per minute (BPM).">120</div>
+        </th>
+        <th></th>
+        <th class="colF">
+          <div class="btn-bpm">
+            <button type="button" data-increment="10" class="bpm-num" data-help="Increase BPM by 10.">10</button>
+            <span class="fa fa-plus"></span>
+            <button type="button" data-increment="1" class="bpm-num"  data-help="Increase BPM by 1.">1</button>
+          </div>          
+        </th>
+        <th colspan="4" class="colG">
+          <button type="button" id="reset" data-help="Reset yellow marker to 1 (start of sequence)."><span class="fa fa-backward fa-2x"></span></button>
+        </th>
+        <th colspan="8" class="colH">
+          <input id="importfile" type="file" multiple accept=".zip">
+          <button type="button" id="btn-import" data-help="Import sequences saved in zip file (see Export).">IMPORT</button>
+          <br>
+          <button type="button" id="btn-clear" data-help="Remove all orange cells, reset volume & panning and return to default sound samples.">CLEAR</button>
+        </th>  
+        <th colspan="4" class="colI">
+          <div id="dragfrom"></div>
+        </th>          
+      </tr>
+      <tr id="meter">
+        <th id="ht" colspan="3"></th>
+        <th data-x="0" class="current" ><div class="sep-num"></div><div class="sep-number">1</div></th>
+        <th data-x="1"></th>
+        <th data-x="2"><div class="sep-sm">|</div></th>
+        <th data-x="3"></th>
+        <th data-x="4"><div class="sep-lg">|</div></th>
+        <th data-x="5"></th>
+        <th data-x="6"><div class="sep-sm">|</div></th>
+        <th data-x="7"></th>
+        <th data-x="8"><div class="sep-num"></div><div class="sep-number">2</div></th>
+        <th data-x="9"></th>
+        <th data-x="10"><div class="sep-sm">|</div></th>
+        <th data-x="11"></th>
+        <th data-x="12"><div class="sep-lg">|</div></th>
+        <th data-x="13"></th>
+        <th data-x="14"><div class="sep-sm">|</div></th>
+        <th data-x="15"></th>
+        <th data-x="16"><div class="sep-num"></div><div class="sep-number">3</div></th>
+        <th data-x="17"></th>
+        <th data-x="18"><div class="sep-sm">|</div></th>
+        <th data-x="19"></th>
+        <th data-x="20"><div class="sep-lg">|</div></th>
+        <th data-x="21"></th>
+        <th data-x="22"><div class="sep-sm">|</div></th>
+        <th data-x="23"></th>
+        <th data-x="24"><div class="sep-num"></div><div class="sep-number">4</div></th>
+        <th data-x="25"></th>
+        <th data-x="26"><div class="sep-sm">|</div></th>
+        <th data-x="27"></th>
+        <th data-x="28"><div class="sep-lg">|</div></th>
+        <th data-x="29"></th>
+        <th data-x="30"><div class="sep-sm">|</div></th>
+        <th data-x="31"></th>
+        <th id="ht2" colspan="4" data-help="Removes all Sequences from Chain.">Clear Chain.</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
   
   <footer>
-    <p>Created by Adam K. Brown, Mark R. Brown, 2018</p>
-    <p id="version"></p> 
+    <p>Created by Adam K. Brown, Mark R. Brown, 2018. Version <span id="version"></span></p>
   </footer>
   
   
