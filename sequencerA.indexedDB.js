@@ -176,13 +176,14 @@ $( document ).ready(function() {
         }
         
         [1,2,3,4].forEach(function(i) {
-            if (row%2==0 && row<8) {
+            if (row%2==0) {
                 let slot=row*2+i; // row=0 => 1,2,3,4  row=2 => 5,6,7,8   row=4 => 9,10,11,12 ...
-                tr+='<td class="chain" rowspan="2"><div class="dropnum" id="dropnum_'+slot+'"><span class="fa fa-cube"></span>'+slot+'</div><div class="dropto" id="dropto_'+slot+'"></div></td>';
-            } /*else {
-                tr+='<td class="chain"></td>';
-            }
-               */
+                if (slot <= 16) {
+                     tr+='<td class="chain" rowspan="2"><div class="dropnum" id="dropnum_'+slot+'"><span class="fa fa-cube"></span>'+slot+'</div><div class="dropto" id="dropto_'+slot+'"></div></td>';
+                } else {
+                     tr+='<td class="chain"></td>';
+                }
+             } 
         })
         
         tr+='</tr>';    
