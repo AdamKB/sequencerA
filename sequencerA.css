@@ -561,8 +561,7 @@ color: #ffea01;
 }
 
 .sep-number, .sep-sm, .sep-lg {
-    position: relative;
-    right: 3.5px;
+    float: left;
     font-weight: bold;
 }
 
