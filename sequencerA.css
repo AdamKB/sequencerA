@@ -291,6 +291,7 @@ body{
     background-color: #626262;
     border: 2px solid black;
     cursor: pointer;
+    width: 100%;
 }
 
 #ht2:active {
