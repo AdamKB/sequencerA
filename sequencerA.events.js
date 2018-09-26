@@ -5,7 +5,6 @@ $(function() {
     var currentChain={"key":0,"name":""};
     var currentSequence={"key":0,"name":""};
 
-
     //Click sample to open library & replace
     $(".btn-sound").on("click",function() {
         let html='';
@@ -300,23 +299,18 @@ $(function() {
     var help = $("#help-text");
     help.addClass("help-default");
     
-    var solo = $(".btn-single");
-    var mute = $(".btn-mute");
     var save = $("#btn-save");
     var load = $("#btn-load");
     var clear = $("#btn-clear");
     var play = $("#start-stop"),
         icon = play.find("span");
     var bpm = $("#bpm");
-    var cell = $(".cell");
     var reset = $("#reset");
-    //var volume = $(".btn-volume");
-    //var pan = $(".btn-pan");
     var dragBtn = $(".dragAbbr-btn");
     var ht2 = $("#meter td:last-child");
     var dropto = $(".dropto");
     
-    $(".btn-volume, .btn-pan").change(function() {
+    $("body").on("change",".btn-volume, .btn-pan",function() {
         let that = $(this);
         let btn=this.className;
         let y=that.closest("tr").data("y");
@@ -342,68 +336,6 @@ $(function() {
     $("#reset").click(function () {
         resetCurrent();
     });
-    
-    function setLastModified(indx) {
-        let now=new Date();
-        projectIndex[indx].last_modified_unix=Math.round(now.getTime() / 1000);
-        projectIndex[indx].last_modified=now.getDate()+"/"+now.getMonth()+"/"+now.getFullYear()+" "+now.getHours().toString().paddingLeft("00")+":"+now.getMinutes().toString().paddingLeft("00");
-    }
-
-    // User clicks SAVE button in dialog
-    $("body").on("click","#save",function() {
-        // Validation first
-        let name=$("#project-name").val().trim();
-        if (name.length==0) {
-            sweetAlert("Must enter a name.");
-            return;            
-        }
-        if (!$("#project-name")[0].checkValidity()) {
-            sweetAlert("Invalid  name.");
-            return;
-        }
-        // Check name not already used
-        let indx=existsIndex("name",name);
-        if (currentChain.name && indx) {
-            sweetAlert("Name already in use.");
-            return;
-        }
-        // Set entry in projectIndex
-        let now=new Date();
-        if (!indx) {
-            let index={};
-            index.name=name;
-            index.abbr=createAbbr(name);
-            index.key=Math.round(now.getTime() / 1000);
-            projectIndex.unshift(index); 
-            indx=0;
-        }
-        
-        setLastModified(indx);
-        
-        projectIndex[indx].chain=[];
-        let key="";
-        let slot="";
-        $(".chain-item").each(function() {
-            key=$(this).data("key");
-            slot=$(this).parent().prop("id");
-            projectIndex[indx].chain.push({"key":key,"slot":slot});
-        });        
-        
-        // Set projectIndex in localStorage
-        localStorage.setItem("projectIndex",JSON.stringify(projectIndex));
-
-        // If sequence data, set localStorage for project object
-        if (projectIndex[indx].chain.length==0) {
-            project.bpm=parseInt($("#bpm").text());
-            project.sequencekey=projectIndex[indx].key;
-            let str=JSON.stringify(project);
-            projectIndex[indx].hash=str.hashCode();
-            localStorage.setItem(projectIndex[indx].key,str);  
-        }
-        
-        fillDragfrom();
-        $("body").find("#popup-table tbody").replaceWith(listProject("last_modified_unix","desc"));      
-    })
     
     // Export all saved sequences (and chains) into zip file for user to download
     $("body").on("click","#exportall",function() {
@@ -576,24 +508,65 @@ $(function() {
             }
         });    
     })
+
+       // User clicks SAVE button in dialog
+       $("body").on("click","#save",function() {
+        // Validation first
+        let name=$("#project-name").val().trim();
+        if (name.length==0) {
+            sweetAlert("Must enter a name.");
+            return;            
+        }
+        if (!$("#project-name")[0].checkValidity()) {
+            sweetAlert("Invalid  name.");
+            return;
+        }
+        // Set entry in projectIndex
+        let now=new Date();
+        let chain=[];
+        let sequence="";
+        let key="";
+        let slot="";
+        $(".chain-item").each(function() {
+            key=$(this).data("key");
+            slot=$(this).parent().prop("id");
+            chain.push({"key":key,"slot":slot});
+        });
+        if (chain.length==0) {
+            sequence=JSON.stringify(project);
+        }
+
+        db.transaction("projects","readwrite").objectStore("projects")
+          .add({name:name,
+                abbr:createAbbr(name), 
+                last_modified_unix:now.getTime(),
+                last_modified:now.getDate()+"/"+now.getMonth()+"/"+now.getFullYear()+" "+now.getHours().toString().paddingLeft("00")+":"+now.getMinutes().toString().paddingLeft("00"),
+                chain:chain,
+                sequence:sequence}).onsuccess=function(e) {
+            console.log("Inserted successfully - "+name);
+        };
+        
+        fillDragfrom();
+        $("body").find("#popup-table tbody").replaceWith(listProject("last_modified_unix","desc"));      
+    })
     
     // List Chains and Sequences. Prompt for Chain/Sequence new name on Save.
     function listProject(triggerby, sortdir) {
         let html="";
         let nb=0;
         
-        function printtr(isChain) {
+        function printtr(id, name, abbr, last_modified, chain) {
             nb++;
-            html+='<tr data-key="'+projectIndex[i].key+'">';
+            html+='<tr data-key="'+id+'">';
             html+='<td class="centre"><span class="fa fa-upload"></span></td>';
             html+='<td>';
-            html+='<input class="project-name" type="text" maxlength="50" value="'+projectIndex[i].name+'" title="Mandatory name (max. 50 characters)" required>';
-            if (isChain) {
+            html+='<input class="project-name" type="text" maxlength="50" value="'+name+'" title="Mandatory name (max. 50 characters)" required>';
+            if (chain.length>0) {
                 html+='<span class="fa fa-angle-right" title="Show/Hide component sequences"></span>';
             }
             html+='</td>';
-            html+='<td><input class="abbr" type="text" maxlength="3" size="3" value="'+projectIndex[i].abbr+'" pattern="[A-Za-z0-9]{2}" title="Mandatory 2 character abbreviation" required></td>';
-            html+="<td>"+projectIndex[i].last_modified+"</td>";
+            html+='<td><input class="abbr" type="text" maxlength="3" size="3" value="'+abbr+'" pattern="[A-Za-z0-9]{2}" title="Mandatory 2 character abbreviation" required></td>';
+            html+="<td>"+last_modified+"</td>";
             html+='<td class="centre"><span class="fa fa-code"></span></td>';
             html+='<td class="centre"><span class="fa fa-trash-o"></span></td>';
             html+="</tr>";              
@@ -604,39 +577,25 @@ $(function() {
             let chainSeq=[];
             let found=false;
             let key="";
-            // Print Chains first
-            for (i in projectIndex) {
-                if (projectIndex[i].chain.length>0) {
-                    for (j in projectIndex[i].chain) {
-                        chainSeq.push(projectIndex[i].chain[j].key);
-                    }
-                    printtr(true);                  
-                }
+            console.log(db);
+            db.transaction("projects","readonly").objectStore("projects").openCursor().onsuccess = function(e) {
+                console.log(e);
+                let cursor=e.target.result;
+                if(cursor) {
+                    printtr(cursor.value.id, cursor.value.name, cursor.value.abbr, cursor.value.last_modified, cursor.value.chain);
+                    cursor.continue();
+                } 
             }
-            // Print orphan sequences
-            for (i in projectIndex) {
-                if (projectIndex[i].chain.length==0) {
-                    key = projectIndex[i].key;
-                    found=false;
-                    for (j in chainSeq) {
-                        if (key==chainSeq[j]) {
-                            found=true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        printtr(false);
-                    }
-                }
-            }            
+
             html+='</tbody>';            
         }
-        
+        // TOBE COMPLETED
+        /*
         if (triggerby!="btn-save" && triggerby!="btn-load") {
             projectIndex.sort(compareValues(triggerby, sortdir));
             makeBody();
             return html;
-        }
+        }*/
         
         html='<div id="popup-container">';     
         if (triggerby=="btn-save") {
@@ -665,7 +624,7 @@ $(function() {
         html+='<th>Code</th>';
         html+='<th>Delete</th>';
         html+='</tr></thead>';
-        
+     
         makeBody();
         
         if (triggerby=="btn-save" || triggerby!=="btn-load") {
@@ -680,23 +639,36 @@ $(function() {
     
     // User clicks "SAVE" or "LOAD" button
     $("#btn-save, #btn-load").on("click",function(){
+        // Create pop-up dialog for SAVE, LOAD etc
+        let popup=$('#popup-dialog').dialog({
+            autoOpen: false,
+            modal: true,
+            width: 620,
+            height: 350,
+            open: function (event, ui) {
+            },
+            close: function (event, ui) { 
+            }
+        });        
         let id=this.id;
         let nbCells=$(".cell.selected").length;
         if (nbCells==0 && id=="btn-save") {
             sweetAlert("Your sequence has no sounds.");
             return;
         }
+        console.log("callling listProject");
         let html=listProject(id);
         if (!html) {
             sweetAlert("No projects saved.");
             return;
         }
+        console.log(html);
         popup.html(html);     
         popup.dialog('open');
     });     
     
     // User clicks single(S) button for a channel. S and M buttons are mutually exclusive
-    solo.click(function () {
+    $("body").on("click",".btn-single",function () {
         let that=$(this);
         let y=that.closest("tr").data("y");
         that.toggleClass("single");
@@ -709,7 +681,8 @@ $(function() {
     });
     
     // User clicks mute button for a channel
-    mute.click(function () {
+    
+    $("body").on("click",".btn-mute",function () {
         let that=$(this);
         let y=that.closest("tr").data("y");
         that.toggleClass("muted");
@@ -722,14 +695,13 @@ $(function() {
     });
     
     // Click&drag function
-
-  var down = false;
-    
-  $(document).mouseup(function() {
-    down = false;
-  });
-    
-  function selectCell(that) {
+    var down = false;
+        
+    $(document).mouseup(function() {
+        down = false;
+    });
+        
+    function selectCell(that) {
         let x=that.data("x");
         let y=that.closest("tr").data("y");
         
@@ -740,15 +712,15 @@ $(function() {
         } else {
             project.sounds[y].sequence[x]=0.0;
         }
-  }
+    }
     
-    $(".cell").mouseover(function(){
+    $("body").on("mouseover",".cell",function(){
         if(down) {
             selectCell($(this));
         }
     });
 
-    $(".cell").mousedown(function () {
+    $("body").on("mousedown",".cell",function(){
         down = true;
         selectCell($(this));
     });
@@ -827,8 +799,8 @@ $(function() {
         currentSequence.name="";
         project.chain.length=0;
         for (i in project.sounds) {
-            $("#volume"+i).val("0.5");
-            $("#stereo"+i).val("0");
+            $("tbody #volume"+i).val("0.5");
+            $("tbody #stereo"+i).val("0");
             project.sounds[i].single=false;
             project.sounds[i].mute=false;
             project.sounds[i].volume=0.5;
