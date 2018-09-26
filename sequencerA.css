@@ -665,6 +665,21 @@ button {
   background-color: darkorange;
 }
 
+#main-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid black;
+    box-shadow: 0px 0px 27px black;
+}
+/*
+#main-table tr:nth-child(1) {
+    background: radial-gradient(#484848, #373737);
+}
+*/
+#main-table tr {
+    background-color: #484848;
+}
+
 #meter {
     border: 2px solid black;
     border-bottom: 4px solid black;
@@ -681,21 +696,6 @@ button {
     background-color: #626262;
     border-left: 2px solid black;
     text-align: center;
-}
-
-#main-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 2px solid black;
-    box-shadow: 0px 0px 27px black;
-}
-/*
-#main-table tr:nth-child(1) {
-    background: radial-gradient(#484848, #373737);
-}
-*/
-#main-table tr {
-    background-color: #484848;
 }
 
 /*channel name*/
