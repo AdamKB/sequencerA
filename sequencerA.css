@@ -681,7 +681,7 @@ button {
     background: radial-gradient(#484848, #373737);
 }
 */
-#main-table tr {
+#main-table tr:not(#meter) {
     background-color: #484848;
 }
 
