@@ -557,6 +557,7 @@ color: #ffea01;
 
 #btn-save, #btn-load, #btn-import, #btn-clear {
     width: 38mm;
+    font-weight: bold;
 }
 
 .sep-number, .sep-sm, .sep-lg {
@@ -769,6 +770,7 @@ button {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    border: 2px solid black;
 }
 
 .fa-minus, .fa-plus {
