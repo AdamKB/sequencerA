@@ -558,6 +558,7 @@ color: #ffea01;
 #btn-save, #btn-load, #btn-import, #btn-clear {
     width: 38mm;
     font-weight: bold;
+    height: 1.74rem;
 }
 
 .sep-number, .sep-sm, .sep-lg {
