@@ -184,7 +184,7 @@
         $(".current").removeClass("current");
         
         pos=(pos+1)%sequenceLength;
-        $("#meter td[data-x="+pos+"]").addClass("current");
+        $("#meter th[data-x="+pos+"]").addClass("current");
 
         // End of sequence. IF playing chain then load/play next sequence in chain else loop on currently displayed sequence
         if (pos==0) {
