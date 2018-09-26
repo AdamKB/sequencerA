@@ -287,12 +287,19 @@ body{
     color: black;
     font-weight: bold;
     text-align: center;
+    background-color: #626262;
+    border: 2px solid black;
+    cursor: pointer;
 }
 
+#ht2:active {
+    background-color: #525252;
+}
+/*
 #meter td:last-child:active {
     background-color: #525252;
 }
-
+*/
 #importfile {
     display: none;
 }
