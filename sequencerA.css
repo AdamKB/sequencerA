@@ -245,7 +245,7 @@ body{
 }
 
 .dropnum {
-    font-size: 1.5rem;
+    font-size: 1rem;
     text-align: center;
     position: relative;
     top: 22.5px;
@@ -291,7 +291,6 @@ body{
     background-color: #626262;
     border: 2px solid black;
     cursor: pointer;
-    width: 100%;
 }
 
 #ht2:active {
