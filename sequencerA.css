@@ -301,6 +301,11 @@ body{
     background-color: #525252;
 }
 */
+
+.chain td:nth-child(1) {
+    border-left: 2px solid black;
+}
+
 #importfile {
     display: none;
 }
