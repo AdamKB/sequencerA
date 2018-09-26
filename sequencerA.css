@@ -274,6 +274,7 @@ body{
 }
 
 #dragfrom {
+    height: 118px;
     overflow-y: auto;
     margin: auto;
     display: flex;
