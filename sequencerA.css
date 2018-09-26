@@ -748,12 +748,10 @@ button {
 
 
 #bpm {
-    height: 80px;
     background-color: #dbdbdb;
     border: 2px solid black;
     border-radius: 10px;
     color: #383838;
-    text-align: center;
     font-size: 30px;
     vertical-align: middle;
     line-height: 80px;
